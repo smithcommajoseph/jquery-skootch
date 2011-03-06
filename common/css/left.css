@@ -1,0 +1,35 @@
+/*Left Skootch Menu*/
+#skootch-configs{ 
+	overflow: visible;
+	position: absolute;
+	top: 178px;
+	width: 49px;
+	z-index: 9998;
+	}
+#skootch-configs dt{ 
+	background: url("../imgs/lefthandle_sprite.png") no-repeat;
+	cursor: pointer;
+	float: left;
+	font-weight: bold;
+	height: 31px;
+	left: 0px;
+	position: absolute;
+	white-space: nowrap;
+	width: 49px;
+	z-index: 9999;
+	}
+#skootch-configs dt span{ 
+	-webkit-transform: rotate(90deg);
+	display: block;
+	font-size: 15px;
+	position: relative;
+	text-transform: capitalize;
+	top: 56px;
+	}
+#skootch-configs dd	{ 
+	display: block;
+	float: left;
+	left: -240px;
+	position: relative;
+	width: 240px;
+	}
