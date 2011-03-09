@@ -57,16 +57,114 @@ table {
 /*Style*/
 html {
   width: 100%;
-  background-image: -webkit-gradient(radial, 50% 0%, 0, 50% 0%, 750, color-stop(0%, #B1C939), color-stop(100%, #75B23B));
-  background-image: -moz-radial-gradient(top center, circle, #B1C939 0%, #75B23B 750px);
-  background-image: radial-gradient(top center, circle, #B1C939 0%, #75B23B 750px);
+  background-image: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 700, color-stop(0%, #B1C939), color-stop(100%, #75B23B));
+  background-image: -moz-radial-gradient(top center, circle, #B1C939 0%, #75B23B 700px);
+  background-image: radial-gradient(top center, circle, #B1C939 0%, #75B23B 700px);
   padding-top: 10px;
   font-family: Helvetica, sans-serif;
 }
-
+#main{ 
+  display: -webkit-box;
+  display: -moz-box;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  width: 100%;
+  padding-bottom:80px;
+}
 #github img{ 
 	border: 0px;
 	position: absolute;
 	right: 0px;
 	top: 0px;
+	z-index:9999;
 	}
+#header{ 
+	display: -webkit-box;
+	display: -moz-box;
+	width: 700px;
+	height:70px;
+	margin-top:10px;
+	margin-bottom:30px;
+	}
+#header h1{ 
+	width:700px;
+	text-align: center;
+	color: white;
+	text-shadow: #303810 1px 1px 3px; 
+	font: 50px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	-webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0.5)));
+	}
+#body {
+	display: -webkit-box;
+	display: -moz-box;
+	
+	-webkit-box-orient: vertical;
+	-moz-box-orient: vertical;
+	-webkit-box-align: justify;
+	-moz-box-align: justify;
+	
+	background-color: rgba(255, 255, 255, 0.9);
+	
+	-moz-box-shadow: #303810 0 0 10px 0;
+	-webkit-box-shadow: #303810 0 0 10px 0;
+	-o-box-shadow: #303810 0 0 10px 0;
+	box-shadow: #303810 0 0 10px 0;
+	
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-o-border-radius: 10px;
+	-ms-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	border-radius: 10px;
+
+	padding: 20px;
+	width: 700px;
+
+	z-index: 2;
+}
+#main h2 { 
+	-webkit-box-sizing: border-box;
+	border-bottom: 3px solid #84962B;
+	color: #262d0b;
+	font-size: 20px;
+	margin-top: 24px;
+	padding: 5px;
+	width: 100%;
+	} 
+#main p{ 
+	display:block;
+	font-size: 15px;
+	margin-top: 15px;
+	margin-bottom:8px;
+	}
+pre.codeblock{ 
+	display:block;
+	margin-top: 15px;
+	margin-bottom:8px;
+	background-color: #111;
+	
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	-o-border-radius: 7px;
+	-ms-border-radius: 7px;
+	-khtml-border-radius: 7px;
+	border-radius: 7px;
+	
+	color: #9c53c9;
+	padding:20px;
+	font-size:16px;
+	}
+pre.codeblock .jQ{ 
+	color: #c9b23a;
+	}
+pre.codeblock .sTr{ 
+	color: #518BD2;
+	}
+pre.codeblock .nUm{ 
+	color: #b93225;
+	}
+pre.codeblock .mA{ 
+	color:#ddd
+	}	
