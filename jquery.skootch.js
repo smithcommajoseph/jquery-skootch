@@ -6,23 +6,62 @@
  */
  
 (function($) {
-    $.fn.skootch = function(p) {
-        var def = {
+    $.fn.skootch = function(overrides) {
+        
+        //provides some sensible defaults
+        var defaults = {
             trigger: '#skootch-trigger',
             invader: '#skootch-invader',
-            wrapperIdSuffix: 'skootch-wrap'
+            wrapperSuffix: 'skootch-wrap',
+            smart: true,
+            direction: "left"
         },
-        params = $.extend(def, p),
-        indigenewrap = $(this).attr('id')+'-'+params.wrapperIdSuffix;
         
-        $(this).wrap(function() {
-          return '<div id="'+indigenewrap+'" syle="position: relative;"/>';
-        });
+        //merge the defaults w/ user overridden params
+        params = $.extend(defaults, overrides),
         
+        //set $indigen to 'this'
+        $indigen = this,
         
-        var $indigen = this,
-            $indigenewrapper = $('#'+indigenewrap),
-            invaderWidth = $(params.invader).width();
+        //the $indigen node wrapper id
+        indigenewrap = $indigen.attr('id')+'-'+params.wrapperSuffix,
+        
+        //wrap $indigen and set '$indigenewrapper' to the res
+        $indigenewrapper = $indigen.wrap(function() {
+                                return '<div id="'+indigenewrap+'" syle="position: relative;"/>';
+                            }),
+        
+        //caclulate the 'invading' nodes width.
+        invaderWidth = $(params.invader).width(),
+        
+        //create animap as an empty ob literal
+        animap = {},
+        
+        //create our direction maps
+        leftmap = {
+            a: {"left": "+="+invaderWidth},
+            r: {"left": "-="+invaderWidth}
+        },
+        rightmap = {
+            a: {"right": "+="+invaderWidth},
+            r: {"right": "-="+invaderWidth}
+        },
+        topmap = {
+            a: {"top": "+="+invaderWidth},
+            r: {"top": "-="+invaderWidth}
+        };
+        
+        switch(params.direction){
+            case 'left':
+                animap = leftmap;
+                break;
+            case 'right':
+                animap = rightmap;
+                break;
+            case 'top':
+                animap = topmap;
+                break;
+        }
         
         var clickHandler = function(e){
             $(params.trigger).unbind('.skootchEvents');
@@ -43,13 +82,13 @@
                      var three4th = one4th * 3; 
                      $('body').css({"overflow-x": "hidden"});
                      
-                    $indigen.css('position', 'relative').animate({"left": "+="+invaderWidth }, "slow", function(){
-                        // debug.log('categoryToggleOn animate closure 1');
+                    $indigen.css('position', 'relative').animate(animap.a, "slow", function(){
+                        // console.log(params.direction);
                     });
                 // } 
                 
                 $(this).removeClass('skootch-trigger-closed').addClass('skootch-trigger-active');
-                $(params.invader).animate({"left": "+="+invaderWidth}, "slow", function(){
+                $(params.invader).animate(animap.a, "slow", function(){
                     // debug.log('categoryToggleOn animate closure 2');
                     // debug.log($(this));
                     // rebind                   
@@ -62,13 +101,13 @@
                 $(this).data('state', 'Closed');
                 
                 // if(gutterwidth < 200){        
-                    $indigen.animate({"left": "-="+invaderWidth}, "slow", function(){
+                    $indigen.animate(animap.r, "slow", function(){
                         $('body').css({"overflow-x": "auto"});
                     });
                 // }
                 
                 $(this).removeClass('skootch-trigger-active').addClass('skootch-trigger-closed');
-                $(params.invader).animate({"left": "-="+invaderWidth}, "slow", function(){
+                $(params.invader).animate(animap.r, "slow", function(){
                     // debug.log('categoryToggleOff animate closure 2');
                     // rebind
                     $(params.trigger).bind('click.skootchEvents', clickHandler);
