@@ -16,8 +16,8 @@
             direction: "left",
             advancespeed: 'slow',
             retreatspeed: 'slow',
-            advanceeasing: 'linear',
-            retreateasing: 'linear',
+            advanceeasing: 'swing',
+            retreateasing: 'swing',
             smart: true
         },
         overrides = {};
