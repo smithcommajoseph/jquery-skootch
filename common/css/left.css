@@ -1,14 +1,14 @@
 /*Left Skootch Menu*/
-#skootch-me{ 
+#left #skootch-me{ 
 	overflow: visible;
 	position: absolute;
 	top: 232px;
 	left:0px;
-	width: 49px;
+	width: 48px;
 	z-index: 9998;
 	/*opacity: 0.9;*/
 	}
-#skootch-me dt{ 
+#left #skootch-me dt{ 
 	background: url("../imgs/lefthandle_sprite.png") no-repeat;
 	cursor: pointer;
 	float: left;
@@ -17,13 +17,13 @@
 	left: 0px;
 	position: absolute;
 	white-space: nowrap;
-	width: 49px;
+	width: 48px;
 	z-index: 9999;
 	}
-#skootch-me dt.skootch-trigger-active{ 
+#left #skootch-me dt.skootch-trigger-open{ 
 	background-position: -60px;
 	}
-#skootch-me dt span{ 
+#left #skootch-me dt span{ 
 	-webkit-transform: rotate(90deg);
 	-moz-transform: rotate(90deg);
 	-o-transform: rotate(90deg);
@@ -34,14 +34,14 @@
 	text-transform: capitalize;
 	top: 56px;
 	}
-#skootch-me dd	{ 
+#left #skootch-me dd	{ 
 	display: block;
 	float: left;
 	left: -240px;
 	position: relative;
 	width: 240px;
 	}
-#skootch-me dd li{ 
+#left #skootch-me dd li{ 
 	clear: right;
 	display: block;
 	float: right;
@@ -51,7 +51,7 @@
 	position: relative;
 	text-transform: capitalize;
 	}
-#skootch-me dd li a{ 
+#left #skootch-me dd li a{ 
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	-o-border-radius: 10px;
@@ -77,9 +77,19 @@
 	    rgb(33,33,33) 64%
 	);
 	}
-	
-/*#body-skootch-wrap{ 
-	left:240px; 
-	display: block; 
-	position: absolute;
-	}*/
+#left #skootch-me dd li a:hover{ 
+	background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.43, rgb(71,70,71)),
+    color-stop(0.72, rgb(99,99,99)),
+    color-stop(0.86, rgb(130,130,130))
+	);
+	background-image: -moz-linear-gradient(
+	    center bottom,
+	    rgb(71,70,71) 43%,
+	    rgb(99,99,99) 72%,
+	    rgb(130,130,130) 86%
+	);
+	}	

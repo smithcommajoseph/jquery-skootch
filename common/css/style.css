@@ -83,13 +83,13 @@ html {
 #header{ 
 	display: -webkit-box;
 	display: -moz-box;
-	width: 700px;
+	width: 600px;
 	height:70px;
 	margin-top:10px;
 	margin-bottom:30px;
 	}
 #header h1{ 
-	width:700px;
+	width:600px;
 	text-align: center;
 	color: white;
 	text-shadow: #303810 1px 1px 3px; 
@@ -120,7 +120,7 @@ html {
 	border-radius: 10px;
 
 	padding: 20px;
-	width: 700px;
+	width: 600px;
 
 	z-index: 2;
 }
@@ -167,4 +167,47 @@ pre.codeblock .nUm{
 	}
 pre.codeblock .mA{ 
 	color:#ddd
-	}	
+	}
+	
+#skootch-me dd li a{ 
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-o-border-radius: 10px;
+	-ms-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	border-radius: 10px;
+	text-decoration:none;
+	background: #aaa;
+	color:#fff; 
+	line-height: 1.5em; 
+	padding: 3px 13px 2px; 
+	text-shadow: #222 1px 1px 0;
+	background-image: -webkit-gradient(
+	    linear,
+	    left bottom,
+	    left top,
+	    color-stop(0.28, rgb(15,15,15)),
+	    color-stop(0.64, rgb(33,33,33))
+	);
+	background-image: -moz-linear-gradient(
+	    center bottom,
+	    rgb(15,15,15) 28%,
+	    rgb(33,33,33) 64%
+	);
+	}
+#skootch-me dd li a:hover{ 
+	background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.43, rgb(71,70,71)),
+    color-stop(0.72, rgb(99,99,99)),
+    color-stop(0.86, rgb(130,130,130))
+	);
+	background-image: -moz-linear-gradient(
+	    center bottom,
+	    rgb(71,70,71) 43%,
+	    rgb(99,99,99) 72%,
+	    rgb(130,130,130) 86%
+	);
+	}
