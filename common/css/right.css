@@ -1,5 +1,5 @@
 body#right{ 
-	overflow: hidden !important;
+	overflow-x: hidden !important;
 	}
 
 /*Right Skootch Menu*/

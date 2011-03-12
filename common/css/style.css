@@ -1,4 +1,5 @@
 
+
 /*Resets*/
 
 html, body, div, span, applet, object, iframe,
@@ -180,7 +181,7 @@ pre.codeblock .mA{
 	background: #aaa;
 	color:#fff; 
 	line-height: 1.5em; 
-	padding: 3px 13px 2px; 
+	padding: 4px 13px; 
 	text-shadow: #222 1px 1px 0;
 	background-image: -webkit-gradient(
 	    linear,
@@ -193,7 +194,8 @@ pre.codeblock .mA{
 	    center bottom,
 	    rgb(15,15,15) 28%,
 	    rgb(33,33,33) 64%
-	);
+	); 
+	font-size: 14px;
 	}
 #skootch-me dd li a:hover{ 
 	background-image: -webkit-gradient(
