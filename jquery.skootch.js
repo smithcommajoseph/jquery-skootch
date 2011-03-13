@@ -10,15 +10,11 @@
     
 var ver = '1.0';
 
-$.fn.skootch = function(option, value) {
+$.fn.skootch = function(option, arg2) {
     var o = { s: this.selector, c: this.context };
-	
+    
     return this.each(function(){
-        var params = setParams(option, value, arguments),
-
-        //create our $trigger state tracking classes for styling
-        triggerclosed = 'skootch-trigger-closed',
-        triggeropen = 'skootch-trigger-open',
+        var params = setParams(this, option, arg2),
 
         //set our trigger jQ ob
         trigger = params.trigger,
@@ -27,7 +23,7 @@ $.fn.skootch = function(option, value) {
         invaderlinks = params.invaderlinks,
 
         //set $indigen to 'this'
-        $indigen = $(o.s),
+        $indigen = $(o.s, o.c),
 
         //the $indigen node wrapper id
         indigenewrap = $indigen.attr('id')+'-'+params.wrapperSuffix,
@@ -75,7 +71,7 @@ $.fn.skootch = function(option, value) {
                 });
             // } 
 
-            $(trigger).removeClass(triggerclosed).addClass(triggeropen);
+            $(trigger).removeClass(params.triggerclosed).addClass(params.triggeropen);
             $(params.invader).animate(animap.a, params.advancespeed, params.advanceeasing, animatecallback);
         },
 
@@ -90,7 +86,7 @@ $.fn.skootch = function(option, value) {
                 });
             // }
 
-            $(trigger).removeClass(triggeropen).addClass(triggerclosed);
+            $(trigger).removeClass(params.triggeropen).addClass(params.triggerclosed);
             $(params.invader).animate(animap.r, params.retreatspeed, params.retreateasing, animatecallback);
         },
 
@@ -130,7 +126,7 @@ $.fn.skootch = function(option, value) {
                     //if we are clicking on something with an href set the window.location
                     //otherwise, rebind our click
                     //this is a temp hack as most of this should prob be set in our above callback
-                    if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== 'undefined' ){
+                    if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
                         window.location = $(e.target).attr('href');
                     } else {
                         $(trigger).bind('click.skootchEvents.trigger', clickHandler);
@@ -170,25 +166,23 @@ $.fn.skootch = function(option, value) {
     
 };
 
-function setParams(option, value, args){
+function setParams(node, options, arg2){
     var overrides = {};
     
-    if(args.length > 0){
-        //if we passed in an object of overrides
-        if(args.length === 1 && typeof option == 'object') { overrides = option; }
-        
-        //if we are overriding a single value
-        else if(args.length === 2 && value !== 'undefined'){
-            for(var prop in $.fn.skootch.defaults){
-                if(prop == option) overrides[option] = value;
-                else {} //TODO: add  error handling
-            }
-        }
-        
-        // if we made it here, we have NEITHER a map of overrides 
-        // NOR a key => value style pair of args to work with
-        //TODO: add error handling
-        else { return this; }
+    if(typeof options == 'object') { overrides = options; }
+    
+    if(typeof options == 'string') {
+        switch(options){
+            case 'destroy':
+                //coming soon;
+                break;
+            default:
+                if(arg2 !== undefined){
+                    for(var prop in $.fn.skootch.defaults){
+                        if(prop == options) overrides[options] = arg2;
+                    }
+                }
+        }   
     }
     
     //merge the defaults w/ user overridden params
@@ -199,6 +193,8 @@ $.fn.skootch.ver = function() { return ver; };
 
 $.fn.skootch.defaults = {
     trigger: '#skootch-trigger', //the id or class name used for the element that will trigger our skootch
+    triggerclosed: 'skootch-trigger-closed', //trigger closed status class
+    triggeropen: 'skootch-trigger-open', // trigger open status class
     invader: '#skootch-invader', //the id or class name used element that will skootch into the window
     invaderlinks: '#skootch-invader a', //if there are links in the invader elem these are them.
     invaderclickretreat: true, //should everything skootch back to it's start position if a invaderlink is clicked?
