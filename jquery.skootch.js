@@ -7,6 +7,9 @@
  */
  
 (function($) {
+    
+var ver = '1.0';
+
 $.fn.skootch = function(property, value) {
 
     var overrides = {};
@@ -182,6 +185,8 @@ $.fn.skootch = function(property, value) {
     return $(trigger+', '+params.invaderlinks).bind('click.skootchEvents.trigger', clickHandler);
     
 };
+
+$.fn.skootch.ver = function() { return ver; };
 
 $.fn.skootch.defaults = {
     trigger: '#skootch-trigger', //the id or class name used for the element that will trigger our skootch
