@@ -14,146 +14,104 @@ $.fn.skootch = function(option, arg2) {
     var o = { s: this.selector, c: this.context };
     
     return this.each(function(){
-        var params = setParams(this, option, arg2),
+        var $indigen = $(o.s, o.c),
         
-        //set $indigen to 'this'
-        $indigen = $(o.s, o.c),
+        params = setParams(this, option, arg2);
 
-        //the $indigen node wrapper id
-        indigenewrap = $indigen.attr('id')+'-'+params.wrapperSuffix,
+        if(params !== false) {
+            //the $indigen node wrapper id
+            var indigenewrap = $indigen.attr('id')+'-'+params.wrapperSuffix,
 
-        //wrap $indigen and set '$indigenewrapper' to the res
-        $indigenewrapper = $indigen.wrap(function() {
-            return '<div id="'+indigenewrap+'" syle="position: relative;"/>';
-        }),
+            //wrap $indigen and set '$indigenewrapper' to the res
+            $indigenewrapper = $indigen.wrap(function() {
+                return '<div id="'+indigenewrap+'" syle="position: relative;"/>';
+            }),
 
-        //caclulate the 'invading' nodes width.
-        invaderWidth = $(params.invader).width(),
+            //caclulate the 'invading' nodes width.
+            invaderWidth = $(params.invader).width(),
 
-        //create animap as an empty ob literal
-        animap = {},
+            //create animap as an empty ob literal
+            animap = {},
 
-        //create our direction maps
-        leftmap = {
-            a: {"left": "+="+invaderWidth},
-            r: {"left": "-="+invaderWidth}
-        },
-        rightmap = {
-            a: {"right": "+="+invaderWidth},
-            r: {"right": "-="+invaderWidth}
-        },
-        topmap = {
-            a: {"top": "+="+invaderWidth},
-            r: {"top": "-="+invaderWidth}
-        },
+            //create our direction maps
+            leftmap = {
+                a: {"left": "+="+invaderWidth},
+                r: {"left": "-="+invaderWidth}
+            },
+            rightmap = {
+                a: {"right": "+="+invaderWidth},
+                r: {"right": "-="+invaderWidth}
+            },
+            topmap = {
+                a: {"top": "+="+invaderWidth},
+                r: {"top": "-="+invaderWidth}
+            };
 
-        //advance
-        advance = function(animatecallback){
-            $(params.trigger).data('state', 'Open');
-
-            // var winwidth = $(window).width();
-            // var batwidth = $indigen.width();
-            // var gutterwidth = (winwidth - batwidth) / 2;
-
-            // if(gutterwidth < 200){
-                // var fullw = invaderWidth - gutterwidth;
-                //  var one4th = Math.floor(fullw * 0.25);
-                //  var three4th = one4th * 3; 
-                $('body').css({"overflow-x": "hidden"});
-                $indigen.css('position', 'relative').animate(animap.a, params.advanceSpeed, params.advanceEasing, function(){
-                    // console.log(params.direction);
-                });
-            // } 
-
-            $(params.trigger).removeClass(params.triggerClosed).addClass(params.triggerOpen);
-            $(params.invader).animate(animap.a, params.advanceSpeed, params.advanceEasing, animatecallback);
-        },
-
-        //retreat
-        retreat = function(animatecallback){
-            // debug.log('toggle OFF');
-            $(params.trigger).data('state', 'Closed');
-
-            // if(gutterwidth < 200){        
-                $indigen.animate(animap.r, params.retreatSpeed, params.retreatEasing, function(){
-                    $('body').css({"overflow-x": "auto"});
-                });
-            // }
-
-            $(params.trigger).removeClass(params.triggerOpen).addClass(params.triggerClosed);
-            $(params.invader).animate(animap.r, params.retreatSpeed, params.retreatEasing, animatecallback);
-        },
-
-        //currently unused,
-        // something similar to ui.tabs destroy is probably more appropriate.
-        tidy = function(){
-            $indigen.removeAttr('style');
-            $(params.invader).removeAttr('style');
-        };
-
-        // set animap = to our desired direction map
-        switch(params.direction){
-            case 'left':    animap = leftmap;   break;
-            case 'right':   animap = rightmap;  break;
-            case 'top':     animap = topmap;    break;
-        }
-
-        var clickHandler = function(e){
-            var isinvader = false;
-
-            //unbind
-            $(params.trigger).unbind(params.triggerEvent);
-
-            //set the isinvader true if the e.target in the invaderLinks obj
-            for(var i=0; i < $(params.invaderLinks).length; i++){
-                if(e.target === $(params.invaderLinks)[i]) { isinvader = true; }
+            // set animap = to our desired direction map
+            switch(params.direction){
+                case 'left':    animap = leftmap;   break;
+                case 'right':   animap = rightmap;  break;
+                case 'top':     animap = topmap;    break;
             }
 
-            //if if the e.target in the params.invaderLinks obj and we are supposed to retreat on click
-            //call retreat and act appropriately
-            if(isinvader === true && params.invaderClickRetreat === true) {
-                retreat(function(){
+            var clickHandler = function(e){
+                var isinvader = false;
 
-                    //fire our callback
-                    params.invaderClickCallback();
+                //unbind
+                $(params.trigger).unbind(params.triggerEvent);
 
-                    //if we are clicking on something with an href set the window.location
-                    //otherwise, rebind our click
-                    //this is a temp hack as most of this should prob be set in our above callback
-                    if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
-                        window.location = $(e.target).attr('href');
-                    } else {
-                        $(params.trigger).bind(params.triggerEvent, clickHandler);
+                //set the isinvader true if the e.target in the invaderLinks obj
+                for(var i=0; i < $(params.invaderLinks).length; i++){
+                    if(e.target === $(params.invaderLinks)[i]) { isinvader = true; }
+                }
+                // console.log(animap);
+                
+                //if if the e.target in the params.invaderLinks obj and we are supposed to retreat on click
+                //call retreat and act appropriately
+                if(isinvader === true && params.invaderClickRetreat === true) {
+                    retreat($indigen, params, animap, function(){
+                        //fire our callback
+                        if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
+                        else {
+                            //if we are clicking on something with an href set the window.location
+                            //otherwise, rebind our click
+                            if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
+                                      window.location = $(e.target).attr('href');
+                                  } else {
+                                      $(params.trigger).bind(params.triggerEvent, clickHandler);
+                              }
+                        }
+                    });
+                }
+
+                //
+                else {
+                    //initial pass
+                    if(typeof $(params.trigger).data('state') == 'undefined'){ 
+                        $(params.trigger).data({'state': 'Closed', 'direction': params.direction});
                     }
-                });
-            }
-
-            //
-            else {
-                //initial pass
-                if(typeof $(params.trigger).data('state') == 'undefined'){ 
-                    $(params.trigger).data({'state': 'Closed', 'direction': params.direction});
+                    //if we are closed, advance
+                    if($(params.trigger).data('state') == 'Closed'){
+                        advance($indigen, params, animap, function(){
+                            // rebind
+                            $(params.trigger).bind(params.triggerEvent, clickHandler);
+                        });
+                    }
+                    //if we are open, retreat
+                    else{
+                        retreat($indigen, params, animap, function(){
+                            // rebind
+                            $(params.trigger).bind(params.triggerEvent, clickHandler);
+                        });
+                    }
                 }
-                //if we are closed, advance
-                if($(params.trigger).data('state') == 'Closed'){
-                    advance(function(){
-                        // rebind
-                        $(params.trigger).bind(params.triggerEvent, clickHandler);
-                    });
-                }
-                //if we are open, retreat
-                else{
-                    retreat(function(){
-                        // rebind
-                        $(params.trigger).bind(params.triggerEvent, clickHandler);
-                    });
-                }
-            }
 
-            return false;
-        };
+                return false;
+            };
 
-        return $(params.trigger+', '+params.invaderLinks).bind(params.triggerEvent, clickHandler);
+            return $(params.trigger+', '+params.invaderLinks).bind(params.triggerEvent, clickHandler);
+            
+        }
         
     });
     
@@ -172,7 +130,7 @@ function setParams(node, options, arg2){
                 params = $(node).data('skootch.params');
                 if(!params) { return false; }
                 $(node).removeData('skootch.params');
-                destroy(params);
+                destroy(node, params);
                 return false;
             default:
                 if(arg2 !== undefined){
@@ -188,9 +146,45 @@ function setParams(node, options, arg2){
     return params;
 }
 
-function destroy(params){
+function destroy(node, params){    
     $(params.trigger).unbind(params.triggerEvent);
-    
+    $(node).unwrap();
+    $(params.invader).removeAttr('style');
+}
+
+function advance($indigen, params, animap, animatecallback){
+    $(params.trigger).data('state', 'Open');
+
+    // var winwidth = $(window).width();
+    // var batwidth = $indigen.width();
+    // var gutterwidth = (winwidth - batwidth) / 2;
+
+    // if(gutterwidth < 200){
+        // var fullw = invaderWidth - gutterwidth;
+        //  var one4th = Math.floor(fullw * 0.25);
+        //  var three4th = one4th * 3; 
+        $('body').css({"overflow-x": "hidden"});
+        $indigen.css('position', 'relative').animate(animap.a, params.advanceSpeed, params.advanceEasing, function(){
+            // console.log(params.direction);
+        });
+    // } 
+
+    $(params.trigger).removeClass(params.triggerClosed).addClass(params.triggerOpen);
+    $(params.invader).animate(animap.a, params.advanceSpeed, params.advanceEasing, animatecallback);
+}
+
+function retreat($indigen, params, animap, animatecallback){
+    // debug.log('toggle OFF');
+    $(params.trigger).data('state', 'Closed');
+
+    // if(gutterwidth < 200){        
+        $indigen.animate(animap.r, params.retreatSpeed, params.retreatEasing, function(){
+            $('body').css({"overflow-x": "auto"});
+        });
+    // }
+
+    $(params.trigger).removeClass(params.triggerOpen).addClass(params.triggerClosed);
+    $(params.invader).animate(animap.r, params.retreatSpeed, params.retreatEasing, animatecallback);
 }
 
 $.fn.skootch.ver = function() { return ver; };
@@ -200,7 +194,7 @@ $.fn.skootch.defaults = {
     advanceSpeed:       'slow', //advancing animation speed
     direction:          'left', //direction of the initial animations
     invader:            '#skootch-invader', //the id or class name used element that will skootch into the window
-    invaderClickCallback: function(){}, //callback for the invaderLinks on click
+    invaderClickCallback: null, //callback for the invaderLinks on click
     invaderClickRetreat: true, //should everything skootch back to it's start position if a invaderlink is clicked?
     invaderLinks:       '#skootch-invader a', //if there are links in the invader elem these are them.
     retreatEasing:      'swing', //retreating easing function
