@@ -19,9 +19,8 @@ $.fn.skootch = function(option, arg2) {
 
         if(params !== false) {
             //the $indigen node wrapper id
-            var indigenewrap = $indigen.attr('id')+'-'+params.wrapperSuffix,
-            animap = setDirectionMaps(params);
-
+            var indigenewrap = $indigen.attr('id')+'-'+params.wrapperSuffix;
+            
             //wrap $indigen and set '$indigenewrapper' to the res
             $indigenewrapper = $indigen.wrap(function() {
                 return '<div id="'+indigenewrap+'" syle="position: relative;"/>';
@@ -38,12 +37,10 @@ $.fn.skootch = function(option, arg2) {
                 for(var i=0; i < $(params.invaderLinks).length; i++){
                     if(e.target === $(params.invaderLinks)[i]) { isinvader = true; }
                 }
-                // console.log(animap);
                 
-                //if if the e.target in the params.invaderLinks obj and we are supposed to retreat on click
                 //call retreat and act appropriately
                 if(isinvader === true && params.invaderClickRetreat === true) {
-                    retreat($indigen, params, animap, function(){
+                    retreat($indigen, params, function(){
                         //fire our callback
                         if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
                         else {
@@ -66,14 +63,14 @@ $.fn.skootch = function(option, arg2) {
                     }
                     //if we are closed, advance
                     if($(params.trigger).data('state') == 'Closed'){
-                        advance($indigen, params, animap, function(){
+                        advance($indigen, params, function(){
                             // rebind
                             $(params.trigger).bind(params.triggerEvent, clickHandler);
                         });
                     }
                     //if we are open, retreat
                     else{
-                        retreat($indigen, params, animap, function(){
+                        retreat($indigen, params, function(){
                             // rebind
                             $(params.trigger).bind(params.triggerEvent, clickHandler);
                         });
@@ -155,36 +152,24 @@ function destroy(node, params){
     $(params.invader).removeAttr('style');
 }
 
-function advance($indigen, params, animap, animatecallback){
+function advance($indigen, params, animatecallback){
+    var animap = setDirectionMaps(params);
     $(params.trigger).data('state', 'Open');
 
-    // var winwidth = $(window).width();
-    // var batwidth = $indigen.width();
-    // var gutterwidth = (winwidth - batwidth) / 2;
-
-    // if(gutterwidth < 200){
-        // var fullw = invaderWidth - gutterwidth;
-        //  var one4th = Math.floor(fullw * 0.25);
-        //  var three4th = one4th * 3; 
-        $('body').css({"overflow-x": "hidden"});
-        $indigen.css('position', 'relative').animate(animap.a, params.advanceSpeed, params.advanceEasing, function(){
-            // console.log(params.direction);
-        });
-    // } 
+    $('body').css({"overflow-x": "hidden"});
+    $indigen.css('position', 'relative').animate(animap.a, params.advanceSpeed, params.advanceEasing);
 
     $(params.trigger).removeClass(params.triggerClosed).addClass(params.triggerOpen);
     $(params.invader).animate(animap.a, params.advanceSpeed, params.advanceEasing, animatecallback);
 }
 
-function retreat($indigen, params, animap, animatecallback){
-    // debug.log('toggle OFF');
+function retreat($indigen, params, animatecallback){
+    var animap = setDirectionMaps(params);
     $(params.trigger).data('state', 'Closed');
 
-    // if(gutterwidth < 200){        
-        $indigen.animate(animap.r, params.retreatSpeed, params.retreatEasing, function(){
-            $('body').css({"overflow-x": "auto"});
-        });
-    // }
+    $indigen.animate(animap.r, params.retreatSpeed, params.retreatEasing, function(){
+        $('body').css({"overflow-x": "auto"});
+    });
 
     $(params.trigger).removeClass(params.triggerOpen).addClass(params.triggerClosed);
     $(params.invader).animate(animap.r, params.retreatSpeed, params.retreatEasing, animatecallback);
