@@ -1,9 +1,10 @@
 /**
- * jQuery Skootch: desc goes here
+ * jQuery Skootch: The JQuery Skootch plugin allows you to easily animate items into the viewport 
+ * and will shift (skootch) the already visible DOM items appropiately.
  * http://
  * 
- * @param name
- * @param value
+ * @param option
+ * @param arg2
  */
  
 (function($) {
@@ -19,7 +20,7 @@ $.fn.skootch = function(option, arg2) {
 
         if(params !== false) {
             //the $indigen node wrapper id
-            var indigenewrap = $indigen.attr('id')+'-'+params.wrapperSuffix;
+            var indigenewrap = $indigen.attr('id')+'-'+params.wrapperSuffix,
             
             //wrap $indigen and set '$indigenewrapper' to the res
             $indigenewrapper = $indigen.wrap(function() {
