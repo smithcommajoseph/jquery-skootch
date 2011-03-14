@@ -15,13 +15,7 @@ $.fn.skootch = function(option, arg2) {
     
     return this.each(function(){
         var params = setParams(this, option, arg2),
-
-        //set our trigger jQ ob
-        trigger = params.trigger,
-
-        //
-        invaderLinks = params.invaderLinks,
-
+        
         //set $indigen to 'this'
         $indigen = $(o.s, o.c),
 
@@ -55,7 +49,7 @@ $.fn.skootch = function(option, arg2) {
 
         //advance
         advance = function(animatecallback){
-            $(trigger).data('state', 'Open');
+            $(params.trigger).data('state', 'Open');
 
             // var winwidth = $(window).width();
             // var batwidth = $indigen.width();
@@ -71,14 +65,14 @@ $.fn.skootch = function(option, arg2) {
                 });
             // } 
 
-            $(trigger).removeClass(params.triggerClosed).addClass(params.triggerOpen);
+            $(params.trigger).removeClass(params.triggerClosed).addClass(params.triggerOpen);
             $(params.invader).animate(animap.a, params.advanceSpeed, params.advanceEasing, animatecallback);
         },
 
         //retreat
         retreat = function(animatecallback){
             // debug.log('toggle OFF');
-            $(trigger).data('state', 'Closed');
+            $(params.trigger).data('state', 'Closed');
 
             // if(gutterwidth < 200){        
                 $indigen.animate(animap.r, params.retreatSpeed, params.retreatEasing, function(){
@@ -86,7 +80,7 @@ $.fn.skootch = function(option, arg2) {
                 });
             // }
 
-            $(trigger).removeClass(params.triggerOpen).addClass(params.triggerClosed);
+            $(params.trigger).removeClass(params.triggerOpen).addClass(params.triggerClosed);
             $(params.invader).animate(animap.r, params.retreatSpeed, params.retreatEasing, animatecallback);
         },
 
@@ -108,7 +102,7 @@ $.fn.skootch = function(option, arg2) {
             var isinvader = false;
 
             //unbind
-            $(trigger).unbind(params.triggerEvent);
+            $(params.trigger).unbind(params.triggerEvent);
 
             //set the isinvader true if the e.target in the invaderLinks obj
             for(var i=0; i < $(params.invaderLinks).length; i++){
@@ -129,7 +123,7 @@ $.fn.skootch = function(option, arg2) {
                     if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
                         window.location = $(e.target).attr('href');
                     } else {
-                        $(trigger).bind(params.triggerEvent, clickHandler);
+                        $(params.trigger).bind(params.triggerEvent, clickHandler);
                     }
                 });
             }
@@ -137,21 +131,21 @@ $.fn.skootch = function(option, arg2) {
             //
             else {
                 //initial pass
-                if(typeof $(trigger).data('state') == 'undefined'){ 
-                    $(trigger).data({'state': 'Closed', 'direction': params.direction});
+                if(typeof $(params.trigger).data('state') == 'undefined'){ 
+                    $(params.trigger).data({'state': 'Closed', 'direction': params.direction});
                 }
                 //if we are closed, advance
-                if($(trigger).data('state') == 'Closed'){
+                if($(params.trigger).data('state') == 'Closed'){
                     advance(function(){
                         // rebind
-                        $(trigger).bind(params.triggerEvent, clickHandler);
+                        $(params.trigger).bind(params.triggerEvent, clickHandler);
                     });
                 }
                 //if we are open, retreat
                 else{
                     retreat(function(){
                         // rebind
-                        $(trigger).bind(params.triggerEvent, clickHandler);
+                        $(params.trigger).bind(params.triggerEvent, clickHandler);
                     });
                 }
             }
@@ -159,7 +153,7 @@ $.fn.skootch = function(option, arg2) {
             return false;
         };
 
-        return $(trigger+', '+params.invaderLinks).bind(params.triggerEvent, clickHandler);
+        return $(params.trigger+', '+params.invaderLinks).bind(params.triggerEvent, clickHandler);
         
     });
     
@@ -195,6 +189,7 @@ function setParams(node, options, arg2){
 }
 
 function destroy(params){
+    $(params.trigger).unbind(params.triggerEvent);
     
 }
 
