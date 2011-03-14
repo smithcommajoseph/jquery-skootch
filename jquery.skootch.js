@@ -15,45 +15,19 @@ $.fn.skootch = function(option, arg2) {
     
     return this.each(function(){
         var $indigen = $(o.s, o.c),
-        
         params = setParams(this, option, arg2);
 
         if(params !== false) {
             //the $indigen node wrapper id
             var indigenewrap = $indigen.attr('id')+'-'+params.wrapperSuffix,
+            animap = setDirectionMaps(params);
 
             //wrap $indigen and set '$indigenewrapper' to the res
             $indigenewrapper = $indigen.wrap(function() {
                 return '<div id="'+indigenewrap+'" syle="position: relative;"/>';
-            }),
-
-            //caclulate the 'invading' nodes width.
-            invaderWidth = $(params.invader).width(),
-
-            //create animap as an empty ob literal
-            animap = {},
-
-            //create our direction maps
-            leftmap = {
-                a: {"left": "+="+invaderWidth},
-                r: {"left": "-="+invaderWidth}
-            },
-            rightmap = {
-                a: {"right": "+="+invaderWidth},
-                r: {"right": "-="+invaderWidth}
-            },
-            topmap = {
-                a: {"top": "+="+invaderWidth},
-                r: {"top": "-="+invaderWidth}
-            };
-
-            // set animap = to our desired direction map
-            switch(params.direction){
-                case 'left':    animap = leftmap;   break;
-                case 'right':   animap = rightmap;  break;
-                case 'top':     animap = topmap;    break;
-            }
-
+            });
+            
+            
             var clickHandler = function(e){
                 var isinvader = false;
 
@@ -146,7 +120,36 @@ function setParams(node, options, arg2){
     return params;
 }
 
-function destroy(node, params){    
+function setDirectionMaps(params){
+    //caclulate the 'invading' nodes width.
+    var invaderWidth = $(params.invader).width(),
+    
+    //create our direction maps
+    leftmap = {
+        a: {"left": "+="+invaderWidth},
+        r: {"left": "-="+invaderWidth}
+    },
+    rightmap = {
+        a: {"right": "+="+invaderWidth},
+        r: {"right": "-="+invaderWidth}
+    },
+    topmap = {
+        a: {"top": "+="+invaderWidth},
+        r: {"top": "-="+invaderWidth}
+    };
+
+    // set animap = to our desired direction map
+    switch(params.direction){
+        case 'left':    
+            return leftmap;
+        case 'right':
+            return rightmap;
+        case 'top':
+            return topmap;
+    }
+}
+
+function destroy(node, params){
     $(params.trigger).unbind(params.triggerEvent);
     $(node).unwrap();
     $(params.invader).removeAttr('style');
