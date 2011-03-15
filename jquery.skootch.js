@@ -49,9 +49,10 @@ $.fn.skootch = function(option, arg2) {
                             //otherwise, rebind our click
                             if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
                                 window.location = $(e.target).attr('href');
-                            } else {
-                                $(params.trigger).bind(params.triggerEvent, clickHandler);
                             }
+                            
+                            $(params.trigger).bind(params.triggerEvent, clickHandler);
+                            
                         }
                     });
                 }
