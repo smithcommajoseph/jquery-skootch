@@ -48,10 +48,10 @@ $.fn.skootch = function(option, arg2) {
                             //if we are clicking on something with an href set the window.location
                             //otherwise, rebind our click
                             if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
-                                      window.location = $(e.target).attr('href');
-                                  } else {
-                                      $(params.trigger).bind(params.triggerEvent, clickHandler);
-                              }
+                                window.location = $(e.target).attr('href');
+                            } else {
+                                $(params.trigger).bind(params.triggerEvent, clickHandler);
+                            }
                         }
                     });
                 }
@@ -60,7 +60,7 @@ $.fn.skootch = function(option, arg2) {
                 else {
                     //initial pass
                     if(typeof $(params.trigger).data('state') == 'undefined'){ 
-                        $(params.trigger).data({'state': 'Closed', 'direction': params.direction});
+                        $(params.trigger).data({'state': 'Closed', 'justify': params.justify});
                     }
                     //if we are closed, advance
                     if($(params.trigger).data('state') == 'Closed'){
@@ -137,7 +137,7 @@ function setDirectionMaps(params){
     };
 
     // set animap = to our desired direction map
-    switch(params.direction){
+    switch(params.justify){
         case 'left':    
             return leftmap;
         case 'right':
@@ -181,11 +181,11 @@ $.fn.skootch.ver = function() { return ver; };
 $.fn.skootch.defaults = {
     advanceEasing:      'swing', //advancing easing function
     advanceSpeed:       'slow', //advancing animation speed
-    direction:          'left', //direction of the initial animations
     invader:            '#skootch-invader', //the id or class name used element that will skootch into the window
     invaderClickCallback: null, //callback for the invaderLinks on click
     invaderClickRetreat: true, //should everything skootch back to it's start position if a invaderlink is clicked?
     invaderLinks:       '#skootch-invader a', //if there are links in the invader elem these are them.
+    justify:          'left', //skootch trigger justification
     retreatEasing:      'swing', //retreating easing function
     retreatSpeed:       'slow', //retreating animation speed
     smart:              true, // should we change the amount we are animation our skootched elems by window size?
