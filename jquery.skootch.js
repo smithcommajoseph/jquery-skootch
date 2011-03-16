@@ -81,7 +81,7 @@ $.fn.skootch = function(option, arg2) {
 
                 return false;
             };
-
+            
             return $(params.trigger+', '+params.invaderLinks).bind(params.triggerEvent, clickHandler);
             
         }
@@ -119,62 +119,84 @@ function setParams(node, options, arg2){
     return params;
 }
 
-function setDirectionMaps(params){
+function setDirectionMaps($indigen, params){
     //caclulate the 'invading' nodes width.
     var invaderWidth = $(params.invader).width(),
+        indigenSR = $indigen.css(params.justify),
+        indigenSA;
+        
+    if(params.smart === true){
+        var winWidth = $(window).width(),
+            indigenWidth = $indigen.width() + parseFloat($indigen.css('padding-right')) + parseFloat($indigen.css('padding-left')),
+            totalElemsWidth = (invaderWidth*2) + params.minInvaderMargin + indigenWidth;
+            
+        if(totalElemsWidth <= winWidth) { indigenSA = 0; }
+        else {
+            if(winWidth <= indigenWidth ) { indigenSA = invaderWidth+params.minInvaderMargin; }
+            else {
+                // indigenSA = (winWidth - indigenWidth) / 2; 
+                var indigenOffset = $indigen.offset();
+                indigenSA = (invaderWidth+params.minInvaderMargin) - indigenOffset.left;
+            }
+        }
+    } else {
+        indigenSA = invaderWidth;
+    }
     
     //create our direction maps
-    leftmap = {
-        a: {"left": "+="+invaderWidth},
-        r: {"left": "-="+invaderWidth}
+    var leftmap = {
+        indigen_advance: {"left": "+="+indigenSA},
+        indigen_retreat: {"left": "-="+indigenSR},
+        invader_advance: {"left": "+="+invaderWidth},
+        invader_retreat: {"left": "-="+invaderWidth}
     },
     rightmap = {
-        a: {"right": "+="+invaderWidth},
-        r: {"right": "-="+invaderWidth}
-    },
-    topmap = {
-        a: {"top": "+="+invaderWidth},
-        r: {"top": "-="+invaderWidth}
+        indigen_advance: {"right": "+="+indigenSA},
+        indigen_retreat: {"right": "-="+indigenSR},
+        invader_advance: {"right": "+="+invaderWidth},
+        invader_retreat: {"right": "-="+invaderWidth}
     };
-
+    
     // set animap = to our desired direction map
     switch(params.justify){
         case 'left':    
             return leftmap;
         case 'right':
             return rightmap;
-        case 'top':
-            return topmap;
     }
 }
 
 function destroy(node, params){
+    
     $(params.trigger).unbind(params.triggerEvent);
     $(node).unwrap();
     $(params.invader).removeAttr('style');
 }
 
 function advance($indigen, params, animatecallback){
-    var animap = setDirectionMaps(params);
+    var animap = setDirectionMaps($indigen, params);
     $(params.trigger).data('state', 'Open');
-
+    
     $('body').css({"overflow-x": "hidden"});
-    $indigen.css('position', 'relative').animate(animap.a, params.advanceSpeed, params.advanceEasing);
-
+    $indigen.css('position', 'relative').animate(animap.indigen_advance, params.advanceSpeed, params.advanceEasing);
+    
     $(params.trigger).removeClass(params.triggerClosed).addClass(params.triggerOpen);
-    $(params.invader).animate(animap.a, params.advanceSpeed, params.advanceEasing, animatecallback);
+    $(params.invader).animate(animap.invader_advance, params.advanceSpeed, params.advanceEasing, animatecallback);
+    
 }
 
 function retreat($indigen, params, animatecallback){
-    var animap = setDirectionMaps(params);
+    var animap = setDirectionMaps($indigen, params);
     $(params.trigger).data('state', 'Closed');
 
-    $indigen.animate(animap.r, params.retreatSpeed, params.retreatEasing, function(){
+    $indigen.animate(animap.indigen_retreat, params.retreatSpeed, params.retreatEasing, function(){
         $('body').css({"overflow-x": "auto"});
+        $indigen.removeAttr('style');
     });
-
+    
     $(params.trigger).removeClass(params.triggerOpen).addClass(params.triggerClosed);
-    $(params.invader).animate(animap.r, params.retreatSpeed, params.retreatEasing, animatecallback);
+    $(params.invader).animate(animap.invader_retreat, params.retreatSpeed, params.retreatEasing, animatecallback);
+    
 }
 
 $.fn.skootch.ver = function() { return ver; };
@@ -186,7 +208,8 @@ $.fn.skootch.defaults = {
     invaderClickCallback: null, //callback for the invaderLinks on click
     invaderClickRetreat: true, //should everything skootch back to it's start position if a invaderlink is clicked?
     invaderLinks:       '#skootch-invader a', //if there are links in the invader elem these are them.
-    justify:          'left', //skootch trigger justification
+    justify:            'left', //skootch trigger justification
+    minInvaderMargin:   40, //the minimum amount of margin applied to the invader elem - ONLY USED IF smart = true
     retreatEasing:      'swing', //retreating easing function
     retreatSpeed:       'slow', //retreating animation speed
     smart:              true, // should we change the amount we are animation our skootched elems by window size?
