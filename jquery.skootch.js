@@ -35,14 +35,33 @@ $.fn.skootch = function(option, arg2) {
                 $(params.trigger).unbind(params.triggerEvent);
 
                 //set the isinvader true if the e.target in the invaderLinks obj
+                //TODO: actually, i think this is too formal... should probably check if we are a child
+                //of the invader container. if so then check if it's a clickable elem 
+                //like an anchor or form.
                 for(var i=0; i < $(params.invaderLinks).length; i++){
                     if(e.target === $(params.invaderLinks)[i]) { isinvader = true; }
                 }
                 
                 //call retreat and act appropriately
-                if(isinvader === true && params.invaderClickRetreat === true) {
-                    retreat($indigen, params, function(){
-                        //fire our callback
+                if(isinvader === true) {
+                    //TODO: the contents of this conditional need to be rethought and broken out into
+                    //their own fn.
+                    if(params.invaderClickRetreat === true){
+                        retreat($indigen, params, function(){
+                            //fire our callback
+                            if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
+                            else {
+                                //if we are clicking on something with an href set the window.location
+                                //otherwise, rebind our click
+                                if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
+                                    window.location = $(e.target).attr('href');
+                                }
+                            
+                                $(params.trigger).bind(params.triggerEvent, clickHandler);
+                            
+                            }
+                        });
+                    } else {
                         if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
                         else {
                             //if we are clicking on something with an href set the window.location
@@ -50,11 +69,11 @@ $.fn.skootch = function(option, arg2) {
                             if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
                                 window.location = $(e.target).attr('href');
                             }
-                            
+                        
                             $(params.trigger).bind(params.triggerEvent, clickHandler);
-                            
+                        
                         }
-                    });
+                    }
                 }
 
                 //
@@ -120,11 +139,11 @@ function setParams(node, options, arg2){
 }
 
 function setDirectionMaps($indigen, params){
-    //caclulate the 'invading' nodes width.
     var invaderWidth = $(params.invader).width(),
         indigenSR = $indigen.css(params.justify),
         indigenSA;
-        
+    
+    //If the skootch is smart, we need to do determine how many px our indigen is animating.
     if(params.smart === true){
         var winWidth = $(window).width(),
             indigenWidth = $indigen.width() + parseFloat($indigen.css('padding-right')) + parseFloat($indigen.css('padding-left')),
@@ -134,7 +153,6 @@ function setDirectionMaps($indigen, params){
         else {
             if(winWidth <= indigenWidth ) { indigenSA = invaderWidth+params.minInvaderMargin; }
             else {
-                // indigenSA = (winWidth - indigenWidth) / 2; 
                 var indigenOffset = $indigen.offset();
                 indigenSA = (invaderWidth+params.minInvaderMargin) - indigenOffset.left;
             }
@@ -172,6 +190,9 @@ function destroy(node, params){
     $(node).unwrap();
     $(params.invader).removeAttr('style');
 }
+
+//TODO: could optimize this by not calling setDirectionMaps fn every advance/retreat.
+//while this works as is, the animations use more CPU than they should.
 
 function advance($indigen, params, animatecallback){
     var animap = setDirectionMaps($indigen, params);
