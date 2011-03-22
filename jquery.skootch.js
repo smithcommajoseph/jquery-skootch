@@ -18,32 +18,37 @@ $.fn.skootch = function(option, arg2) {
         var $indigen = $(o.s, o.c),
         opts = setParams(this, option, arg2),
         params = opts.params || null,
-        nextAction = opts.nextAction || null;
+        nextAction = opts.nextAction || null,
+        nextActionCallback = opts.nextActionCallback || null
         
+        if(nextAction !== null){
+            switch(nextAction){
+                case'retreat':
+                    retreat($indigen, params, nextActionCallback);
+                    break;
+            }
+        }
         if(params !== null) {
             //the $indigen node wrapper id
             var indigenewrap = $indigen.attr('id')+'-'+params.wrapperSuffix,
-            
+
             //wrap $indigen and set '$indigenewrapper' to the res
             $indigenewrapper = $indigen.wrap(function() {
                 return '<div id="'+indigenewrap+'" syle="position: relative;"/>';
             });
-            
-            
+
+
             var clickHandler = function(e){
                 var isinvader = false;
-                
+
                 //unbind
                 $(params.trigger).unbind(params.triggerEvent);
 
                 //set the isinvader true if the e.target in the invaderLinks obj
-                //TODO: actually, i think this is too formal... should probably check if we are a child
-                //of the invader container. if so then check if it's a clickable elem 
-                //like an anchor or form.
                 for(var i=0; i < $(params.invaderLinks).length; i++){
                     if(e.target === $(params.invaderLinks)[i]) { isinvader = true; }
                 }
-                
+
                 //call retreat and act appropriately
                 if(isinvader === true) {
                     //TODO: the contents of this conditional need to be rethought and broken out into
@@ -58,9 +63,10 @@ $.fn.skootch = function(option, arg2) {
                                 if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
                                     window.location = $(e.target).attr('href');
                                 }
-
-                                $(params.trigger).bind(params.triggerEvent, clickHandler);
                             }
+                            
+                            $(params.trigger).bind(params.triggerEvent, clickHandler);
+                            
                         });
                     } else {
                         //fire our callback
@@ -75,8 +81,9 @@ $.fn.skootch = function(option, arg2) {
                             else if($(e.target).attr('type') === 'submit') {
                                 var $form = $(e.target).closest('form');
                             }
-
+                            
                             $(params.trigger).bind(params.triggerEvent, clickHandler);
+                            
                         }
                     }
                 }
@@ -102,13 +109,12 @@ $.fn.skootch = function(option, arg2) {
                         });
                     }
                 }
-
+                
                 return false;
             };
-            
-            return $(params.trigger+', '+params.invaderLinks).bind(params.triggerEvent, clickHandler);
-            
         }
+        
+        return $(params.trigger+', '+params.invaderLinks).bind(params.triggerEvent, clickHandler);
         
     });
     
@@ -119,7 +125,8 @@ function setParams(node, options, arg2){
     var overrides = {},
         params = {},
         opts = {},
-        nextAction = '';
+        nextAction = '',
+        nextActionCallback = null;
     
     if(typeof options == 'object') { overrides = options; }
     
@@ -133,7 +140,8 @@ function setParams(node, options, arg2){
                 return false;
             case 'retreat':
                 nextAction = 'retreat';
-                return false;
+                if(arg2.constructor == Function){ nextActionCallback = arg2; }
+                break;
             default:
                 if(arg2 !== undefined){
                     for(var prop in $.fn.skootch.defaults){
@@ -145,7 +153,7 @@ function setParams(node, options, arg2){
     params = $.extend($.fn.skootch.defaults, overrides);
     $(node).data('skootch.params', params);
     
-    opts = {nextAction: nextAction, params: params};
+    opts = {nextAction: nextAction, nextActionCallback: nextActionCallback, params: params};
     return opts;
 }
 
@@ -254,14 +262,10 @@ function totalWidth($elem, useMargins){
     var total;
     useMargins = useMargins || false;
     
-    total = $elem.width() 
-                    + parseFloat($elem.css('padding-right')) 
-                    + parseFloat($elem.css('padding-left'));
+    total = $elem.width() + parseFloat($elem.css('padding-right')) + parseFloat($elem.css('padding-left'));
     if(useMargins === true) { 
-    total = total + parseFloat($elem.css('margin-right'))
-                    + parseFloat($elem.css('margin-left'));
+        total += parseFloat($elem.css('margin-right')) + parseFloat($elem.css('margin-left'));
     }
-                    
     return total;
 }
     
@@ -270,7 +274,7 @@ $.fn.skootch.ver = function() { return ver; };
 $.fn.skootch.defaults = {
     advanceEasing:      'swing', //advancing easing function
     advanceSpeed:       'slow', //advancing animation speed
-    indigenUseMargins:  false, //should we use Margins to calculate the total width of the $indigen elem (the container that skootch is invoked on) 
+    indigenUseMargins:  false, //should we use Margins to calculate the total width of the $indigen elem (the container that skootch is invoked upon) 
     invader:            '#skootch-invader', //the id or class name used element that will skootch into the window
     invaderClickCallback: null, //callback for the invaderLinks on click
     invaderClickRetreat: true, //should everything skootch back to it's start position if a invaderlink is clicked?
@@ -279,7 +283,7 @@ $.fn.skootch.defaults = {
     minInvaderMargin:   40, //the minimum amount of margin applied to the invader elem - ONLY USED IF smart = true
     retreatEasing:      'swing', //retreating easing function
     retreatSpeed:       'slow', //retreating animation speed
-    smart:              true, // should we change the amount we are animation our skootched elems by window size?
+    smart:              true, // should we change the amount we animate our skootched elems by based on window size?
     trigger:            '#skootch-trigger', //the id or class name used for the element that will trigger our skootch
     triggerClosed:      'skootch-trigger-closed', //trigger closed status class
     triggerEvent:       'click.skootch', //name of Event that drives Skootch 
