@@ -16,9 +16,11 @@ $.fn.skootch = function(option, arg2) {
     
     return this.each(function(){
         var $indigen = $(o.s, o.c),
-        params = setParams(this, option, arg2);
-
-        if(params !== false) {
+        opts = setParams(this, option, arg2),
+        params = opts.params || null,
+        nextAction = opts.nextAction || null;
+        
+        if(params !== null) {
             //the $indigen node wrapper id
             var indigenewrap = $indigen.attr('id')+'-'+params.wrapperSuffix,
             
@@ -30,7 +32,7 @@ $.fn.skootch = function(option, arg2) {
             
             var clickHandler = function(e){
                 var isinvader = false;
-
+                
                 //unbind
                 $(params.trigger).unbind(params.triggerEvent);
 
@@ -56,12 +58,12 @@ $.fn.skootch = function(option, arg2) {
                                 if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
                                     window.location = $(e.target).attr('href');
                                 }
-                            
+
                                 $(params.trigger).bind(params.triggerEvent, clickHandler);
-                            
                             }
                         });
                     } else {
+                        //fire our callback
                         if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
                         else {
                             //if we are clicking on something with an href set the window.location
@@ -69,9 +71,12 @@ $.fn.skootch = function(option, arg2) {
                             if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
                                 window.location = $(e.target).attr('href');
                             }
-                        
+                            //not a fan of this logic...
+                            else if($(e.target).attr('type') === 'submit') {
+                                var $form = $(e.target).closest('form');
+                            }
+
                             $(params.trigger).bind(params.triggerEvent, clickHandler);
-                        
                         }
                     }
                 }
@@ -112,7 +117,9 @@ $.fn.skootch = function(option, arg2) {
 
 function setParams(node, options, arg2){
     var overrides = {},
-        params = {};
+        params = {},
+        opts = {},
+        nextAction = '';
     
     if(typeof options == 'object') { overrides = options; }
     
@@ -124,10 +131,13 @@ function setParams(node, options, arg2){
                 $(node).removeData('skootch.params');
                 destroy(node, params);
                 return false;
+            case 'retreat':
+                nextAction = 'retreat';
+                return false;
             default:
                 if(arg2 !== undefined){
                     for(var prop in $.fn.skootch.defaults){
-                        if(prop == options) overrides[options] = arg2;
+                        if(prop == options) { overrides[options] = arg2; }
                     }
                 }
         }
@@ -135,18 +145,19 @@ function setParams(node, options, arg2){
     params = $.extend($.fn.skootch.defaults, overrides);
     $(node).data('skootch.params', params);
     
-    return params;
+    opts = {nextAction: nextAction, params: params};
+    return opts;
 }
 
 function setDirectionMaps($indigen, params){
-    var invaderWidth = $(params.invader).width(),
+    var invaderWidth = totalWidth($(params.invader), true),
         indigenSR = $indigen.css(params.justify),
         indigenSA;
     
     //If the skootch is smart, we need to do determine how many px our indigen is animating.
     if(params.smart === true){
         var winWidth = $(window).width(),
-            indigenWidth = $indigen.width() + parseFloat($indigen.css('padding-right')) + parseFloat($indigen.css('padding-left')),
+            indigenWidth = totalWidth($indigen, params.indigenUseMargins),
             totalElemsWidth = (invaderWidth*2) + params.minInvaderMargin + indigenWidth;
             
         if(totalElemsWidth <= winWidth) { indigenSA = 0; }
@@ -220,15 +231,50 @@ function retreat($indigen, params, animatecallback){
     
 }
 
+//currently unused, need to figure out how to prevent rebind issue when using this fn
+function invaderClickActions(e, params){
+    //fire our callback
+    if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
+    else {
+        //if we are clicking on something with an href set the window.location
+        //otherwise, rebind our click
+        if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
+            window.location = $(e.target).attr('href');
+        }
+        //not a fan of this logic...
+        else if($(e.target).attr('type') === 'submit') {
+            var $form = $(e.target).closest('form');
+        }
+        
+        $(params.trigger).bind(params.triggerEvent, clickHandler);
+    }
+}
+
+function totalWidth($elem, useMargins){
+    var total;
+    useMargins = useMargins || false;
+    
+    total = $elem.width() 
+                    + parseFloat($elem.css('padding-right')) 
+                    + parseFloat($elem.css('padding-left'));
+    if(useMargins === true) { 
+    total = total + parseFloat($elem.css('margin-right'))
+                    + parseFloat($elem.css('margin-left'));
+    }
+                    
+    return total;
+}
+    
 $.fn.skootch.ver = function() { return ver; };
 
 $.fn.skootch.defaults = {
     advanceEasing:      'swing', //advancing easing function
     advanceSpeed:       'slow', //advancing animation speed
+    indigenUseMargins:  false, //should we use Margins to calculate the total width of the $indigen elem (the container that skootch is invoked on) 
     invader:            '#skootch-invader', //the id or class name used element that will skootch into the window
     invaderClickCallback: null, //callback for the invaderLinks on click
     invaderClickRetreat: true, //should everything skootch back to it's start position if a invaderlink is clicked?
-    invaderLinks:       '#skootch-invader a', //if there are links in the invader elem these are them.
+    invaderLinks:       '#skootch-invader a, #skootch-invader input[type=submit]', //if there are links in the invader elem these are them.
     justify:            'left', //skootch trigger justification
     minInvaderMargin:   40, //the minimum amount of margin applied to the invader elem - ONLY USED IF smart = true
     retreatEasing:      'swing', //retreating easing function
