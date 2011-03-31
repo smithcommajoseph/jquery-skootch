@@ -15,27 +15,27 @@ $.fn.skootch = function(option, arg2) {
     var o = { s: this.selector, c: this.context };
     
     return this.each(function(){
-        var $indigen = $(o.s, o.c),
+        var $trigger = $(o.s, o.c),
         opts = setParams(this, option, arg2),
         params = opts.params || null,
         nextAction = opts.nextAction || null,
-        nextActionCallback = opts.nextActionCallback || null
+        nextActionCallback = opts.nextActionCallback || null;
         
         if(nextAction !== null){
             switch(nextAction){
                 case'retreat':
-                    retreat($indigen, params, nextActionCallback);
+                    retreat($trigger, params, nextActionCallback);
                     break;
             }
         } 
         else {
             if(params !== null) {
-                //the $indigen node wrapper id
-                var indigenewrap = $indigen.attr('id')+'-'+params.wrapperSuffix,
+                //the $trigger node wrapper id
+                var indigenwrap = $(params.indigen).attr('id')+'-'+params.wrapperSuffix,
 
-                //wrap $indigen and set '$indigenewrapper' to the res
-                $indigenewrapper = $indigen.wrap(function() {
-                    return '<div id="'+indigenewrap+'" syle="position: relative;"/>';
+                //wrap $params.indigen and set '$indigenwrapper' to the res
+                $indigenwrapper = $(params.indigen).wrap(function() {
+                    return '<div id="'+indigenwrap+'" syle="position: relative;"/>';
                 });
 
 
@@ -43,7 +43,7 @@ $.fn.skootch = function(option, arg2) {
                     var isinvader = false;
 
                     //unbind
-                    $(params.trigger).unbind(params.triggerEvent);
+                    $trigger.unbind(params.triggerEvent);
 
                     //set the isinvader true if the e.target in the invaderLinks obj
                     for(var i=0; i < $(params.invaderLinks).length; i++){
@@ -52,12 +52,12 @@ $.fn.skootch = function(option, arg2) {
 
                     //call retreat and act appropriately
                     if(isinvader === true) {
-                        $(params.trigger).bind(params.triggerEvent, clickHandler);
+                        $trigger.bind(params.triggerEvent, clickHandler);
 
                         //TODO: the contents of this conditional need to be rethought and broken out into
                         //their own fn.
                         if(params.invaderClickRetreat === true){
-                            retreat($indigen, params, function(){
+                            retreat($trigger, params, function(){
                                 //fire our callback
                                 if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
                                 else {
@@ -90,29 +90,29 @@ $.fn.skootch = function(option, arg2) {
                     //
                     else {
                         //initial pass
-                        if(typeof $(params.trigger).data('state') == 'undefined'){ 
-                            $(params.trigger).data({'state': 'Closed', 'justify': params.justify});
+                        if(typeof $(params.indigen).data('state') == 'undefined'){ 
+                            $(params.indigen).data({'state': 'Closed', 'justify': params.justify});
                         }
                         //if we are closed, advance
-                        if($(params.trigger).data('state') == 'Closed'){
-                            advance($indigen, params, function(){
+                        if($(params.indigen).data('state') == 'Closed'){
+                            advance($trigger, params, function(){
                                 // rebind
-                                $(params.trigger).bind(params.triggerEvent, clickHandler);
+                                $trigger.bind(params.triggerEvent, clickHandler);
                             });
                         }
                         //if we are open, retreat
                         else{
-                            retreat($indigen, params, function(){
+                            retreat($trigger, params, function(){
                                 // rebind
-                                $(params.trigger).bind(params.triggerEvent, clickHandler);
+                                $trigger.bind(params.triggerEvent, clickHandler);
                             });
                         }
                     }
 
                     return false;
                 };
-                
-                return $(params.trigger+', '+params.invaderLinks).bind(params.triggerEvent, clickHandler);
+
+                return $('#'+$trigger.attr('id')+', '+params.invaderLinks).bind(params.triggerEvent, clickHandler);
             
             }
         }
@@ -137,10 +137,10 @@ function setParams(node, options, arg2){
                 if(!params) { return false; }
                 $(node).removeData('skootch.params');
                 destroy(node, params);
-                return false;
+                break;
             case 'retreat':
                 nextAction = 'retreat';
-                if(arg2.constructor == Function){ nextActionCallback = arg2; }
+                if(arg2 !== undefined && arg2.constructor == Function){ nextActionCallback = arg2; }
                 break;
             default:
                 if(arg2 !== undefined){
@@ -157,22 +157,22 @@ function setParams(node, options, arg2){
     return opts;
 }
 
-function setDirectionMaps($indigen, params){
+function setDirectionMaps($trigger, params){
     var invaderWidth = totalWidth($(params.invader), true),
-        indigenSR = $indigen.css(params.justify),
+        indigenSR = $(params.indigen).css(params.justify),
         indigenSA;
     
     //If the skootch is smart, we need to do determine how many px our indigen is animating.
     if(params.smart === true){
         var winWidth = $(window).width(),
-            indigenWidth = totalWidth($indigen, params.indigenUseMargins),
+            indigenWidth = totalWidth($(params.indigen), params.indigenUseMargins),
             totalElemsWidth = (invaderWidth*2) + params.minInvaderMargin + indigenWidth;
             
         if(totalElemsWidth <= winWidth) { indigenSA = 0; }
         else {
             if(winWidth <= indigenWidth ) { indigenSA = invaderWidth+params.minInvaderMargin; }
             else {
-                var indigenOffset = $indigen.offset();
+                var indigenOffset = $(params.indigen).offset();
                 indigenSA = (invaderWidth+params.minInvaderMargin) - indigenOffset.left;
             }
         }
@@ -204,8 +204,7 @@ function setDirectionMaps($indigen, params){
 }
 
 function destroy(node, params){
-    
-    $(params.trigger).unbind(params.triggerEvent);
+    $trigger.unbind(params.triggerEvent);
     $(node).unwrap();
     $(params.invader).removeAttr('style');
 }
@@ -213,30 +212,32 @@ function destroy(node, params){
 //TODO: could optimize this by not calling setDirectionMaps fn every advance/retreat.
 //while this works as is, the animations use more CPU than they should.
 
-function advance($indigen, params, animatecallback){
-    var animap = setDirectionMaps($indigen, params);
-    $(params.trigger).data('state', 'Open');
+function advance($trigger, params, animatecallback){
+    if($(params.indigen).data('state') != 'Open'){
+        var animap = setDirectionMaps($(params.indigen), params);
+        $(params.indigen).data('state', 'Open');
     
-    $('body').css({"overflow-x": "hidden"});
-    $indigen.css('position', 'relative').animate(animap.indigen_advance, params.advanceSpeed, params.advanceEasing);
+        $('body').css({"overflow-x": "hidden"});
+        $(params.indigen).css('position', 'relative').animate(animap.indigen_advance, params.advanceSpeed, params.advanceEasing);
     
-    $(params.trigger).removeClass(params.triggerClosed).addClass(params.triggerOpen);
-    $(params.invader).animate(animap.invader_advance, params.advanceSpeed, params.advanceEasing, animatecallback);
-    
+        $trigger.removeClass(params.triggerClosed).addClass(params.triggerOpen);
+        $(params.invader).animate(animap.invader_advance, params.advanceSpeed, params.advanceEasing, animatecallback);
+    }
 }
 
-function retreat($indigen, params, animatecallback){
-    var animap = setDirectionMaps($indigen, params);
-    $(params.trigger).data('state', 'Closed');
+function retreat($trigger, params, animatecallback){
+    if($(params.indigen).data('state') == 'Open'){
+        var animap = setDirectionMaps($(params.indigen), params);
+        $(params.indigen).data('state', 'Closed');
 
-    $indigen.animate(animap.indigen_retreat, params.retreatSpeed, params.retreatEasing, function(){
-        $('body').css({"overflow-x": "auto"});
-        $indigen.removeAttr('style');
-    });
+        $(params.indigen).animate(animap.indigen_retreat, params.retreatSpeed, params.retreatEasing, function(){
+            $('body').css({"overflow-x": "auto"});
+            $(params.indigen).removeAttr('style');
+        });
     
-    $(params.trigger).removeClass(params.triggerOpen).addClass(params.triggerClosed);
-    $(params.invader).animate(animap.invader_retreat, params.retreatSpeed, params.retreatEasing, animatecallback);
-    
+        $trigger.removeClass(params.triggerOpen).addClass(params.triggerClosed);
+        $(params.invader).animate(animap.invader_retreat, params.retreatSpeed, params.retreatEasing, animatecallback);
+    }
 }
 
 //currently unused, need to figure out how to prevent rebind issue when using this fn
@@ -254,7 +255,7 @@ function invaderClickActions(e, params){
             var $form = $(e.target).closest('form');
         }
         
-        $(params.trigger).bind(params.triggerEvent, clickHandler);
+        $trigger.bind(params.triggerEvent, clickHandler);
     }
 }
 
@@ -274,7 +275,8 @@ $.fn.skootch.ver = function() { return ver; };
 $.fn.skootch.defaults = {
     advanceEasing:      'swing', //advancing easing function
     advanceSpeed:       'slow', //advancing animation speed
-    indigenUseMargins:  false, //should we use Margins to calculate the total width of the $indigen elem (the container that skootch is invoked upon) 
+    indigen:            '#skootch-indigen', //the id or class name used for the element that will be skootched
+    indigenUseMargins:  false, //should we use Margins to calculate the total width of the $trigger elem (the container that skootch is invoked upon) 
     invader:            '#skootch-invader', //the id or class name used element that will skootch into the window
     invaderClickCallback: null, //callback for the invaderLinks on click
     invaderClickRetreat: true, //should everything skootch back to it's start position if a invaderlink is clicked?
@@ -284,7 +286,6 @@ $.fn.skootch.defaults = {
     retreatEasing:      'swing', //retreating easing function
     retreatSpeed:       'slow', //retreating animation speed
     smart:              true, // should we change the amount we animate our skootched elems by based on window size?
-    trigger:            '#skootch-trigger', //the id or class name used for the element that will trigger our skootch
     triggerClosed:      'skootch-trigger-closed', //trigger closed status class
     triggerEvent:       'click.skootch', //name of Event that drives Skootch 
     triggerOpen:        'skootch-trigger-open', // trigger open status class
