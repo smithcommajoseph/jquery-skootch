@@ -77,12 +77,8 @@ $.fn.skootch = function(option, arg2) {
                     if(isinvader === true) {
                         $trigger.bind(params.triggerEvent, clickHandler);
 
-                        //TODO: the contents of this conditional need to be rethought and broken out into
-                        //their own fn.
                         if(params.invaderClickRetreat === true){
-                            retreat($trigger, params, function(){
-                                nonInvaderClicks();
-                            });
+                            retreat($trigger, params, function(){ nonInvaderClicks(); });
                         } 
                         else {
                             nonInvaderClicks();
