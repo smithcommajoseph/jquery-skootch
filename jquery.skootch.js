@@ -241,25 +241,6 @@ function retreat($trigger, params, animatecallback){
     }
 }
 
-//currently unused, need to figure out how to prevent rebind issue when using this fn
-function invaderClickActions(e, params){
-    //fire our callback
-    if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
-    else {
-        //if we are clicking on something with an href set the window.location
-        //otherwise, rebind our click
-        if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
-            window.location = $(e.target).attr('href');
-        }
-        //not a fan of this logic...
-        else if($(e.target).attr('type') === 'submit') {
-            var $form = $(e.target).closest('form');
-        }
-        
-        $trigger.bind(params.triggerEvent, clickHandler);
-    }
-}
-
 $.fn.skootch.ver = function() { return ver; };
 
 $.fn.skootch.defaults = {
