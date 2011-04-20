@@ -261,15 +261,8 @@ function invaderClickActions(e, params){
 }
 
 function totalWidth($elem, useMargins){
-    var total;
-    useMargins = useMargins || false;
-    
-    if(useMargins === true) { 
-        total = parseFloat($elem.outerWidth(true));
-    } else {
-        total = parseFloat($elem.outerWidth(false));
-    }
-    return total;
+    useMargins = useMargins || false;    
+    return parseFloat($elem.outerWidth(useMargins));
 }
     
 $.fn.skootch.ver = function() { return ver; };
