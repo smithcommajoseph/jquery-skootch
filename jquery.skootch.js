@@ -46,7 +46,24 @@ $.fn.skootch = function(option, arg2) {
 
 
                 var clickHandler = function(e){
-                    var isinvader = false;
+                    var isinvader = false,
+                        nonInvaderClicks = function(){
+                            //fire our custom callback if it exists
+                            if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
+                            //otherwise...
+                            else {
+                                //if we are clicking on something with an href set the window.location
+                                //otherwise, rebind our click
+                                if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
+                                    window.location = $(e.target).attr('href');
+                                }
+                                //not a fan of this logic...
+                                else if($(e.target).attr('type') === 'submit') {
+                                    var $form = $(e.target).closest('form');
+                                }
+
+                            }
+                        };
 
                     //unbind
                     $trigger.unbind(params.triggerEvent);
@@ -64,44 +81,22 @@ $.fn.skootch = function(option, arg2) {
                         //their own fn.
                         if(params.invaderClickRetreat === true){
                             retreat($trigger, params, function(){
-                                //fire our callback
-                                if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
-                                else {
-                                    //if we are clicking on something with an href set the window.location
-                                    //otherwise, rebind our click
-                                    if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
-                                        window.location = $(e.target).attr('href');
-                                    }
-                                }
-
+                                nonInvaderClicks();
                             });
                         } 
                         else {
-                            //fire our callback
-                            if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
-                            else {
-                                //if we are clicking on something with an href set the window.location
-                                //otherwise, rebind our click
-                                if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
-                                    window.location = $(e.target).attr('href');
-                                }
-                                //not a fan of this logic...
-                                else if($(e.target).attr('type') === 'submit') {
-                                    var $form = $(e.target).closest('form');
-                                }
-
-                            }
+                            nonInvaderClicks();
                         }
                     }
 
                     //
                     else {
                         //initial pass
-                        if(typeof $(params.indigen).data('state') == 'undefined'){ 
-                            $(params.indigen).data({'state': 'Closed', 'justify': params.justify});
+                        if(typeof $(params.indigen).data('skootch.state') == 'undefined'){ 
+                            $(params.indigen).data({'skootch.state': 'Closed', 'justify': params.justify});
                         }
                         //if we are closed, advance
-                        if($(params.indigen).data('state') == 'Closed'){
+                        if($(params.indigen).data('skootch.state') == 'Closed'){
                             advance($trigger, params, function(){
                                 // rebind
                                 $trigger.bind(params.triggerEvent, clickHandler);
@@ -223,9 +218,9 @@ function destroy($trigger, node, callback){
 //TODO: could optimize this by not calling setDirectionMaps fn every advance/retreat.
 //while this works as is, the animations use more CPU than they should.
 function advance($trigger, params, animatecallback){
-    if($(params.indigen).data('state') != 'Open'){
+    if($(params.indigen).data('skootch.state') != 'Open'){
         var animap = setDirectionMaps($(params.indigen), params);
-        $(params.indigen).data('state', 'Open');
+        $(params.indigen).data('skootch.state', 'Open');
     
         $('body').css({"overflow-x": "hidden"});
         $(params.indigen).css('position', 'relative').animate(animap.indigen_advance, params.advanceSpeed, params.advanceEasing);
@@ -236,9 +231,9 @@ function advance($trigger, params, animatecallback){
 }
 
 function retreat($trigger, params, animatecallback){
-    if($(params.indigen).data('state') == 'Open'){
+    if($(params.indigen).data('skootch.state') == 'Open'){
         var animap = setDirectionMaps($(params.indigen), params);
-        $(params.indigen).data('state', 'Closed');
+        $(params.indigen).data('skootch.state', 'Closed');
 
         $(params.indigen).animate(animap.indigen_retreat, params.retreatSpeed, params.retreatEasing, function(){
             $('body').css({"overflow-x": "auto"});
