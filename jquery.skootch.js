@@ -154,14 +154,14 @@ function setParams(node, options, arg2){
 }
 
 function setDirectionMaps($trigger, params){
-    var invaderWidth = totalWidth($(params.invader), true),
+    var invaderWidth = $(params.invader).outerWidth(true),
         indigenSR = $(params.indigen).css(params.justify),
         indigenSA;
     
     //If the skootch is smart, we need to do determine how many px our indigen is animating.
     if(params.smart === true){
         var winWidth = $(window).width(),
-            indigenWidth = totalWidth($(params.indigen), params.indigenUseMargins),
+            indigenWidth = $(params.indigen).outerWidth(params.indigenUseMargins),
             totalElemsWidth = (invaderWidth*2) + params.minInvaderMargin + indigenWidth;
             
         if(totalElemsWidth <= winWidth) { indigenSA = 0; }
@@ -260,11 +260,6 @@ function invaderClickActions(e, params){
     }
 }
 
-function totalWidth($elem, useMargins){
-    useMargins = useMargins || false;    
-    return parseFloat($elem.outerWidth(useMargins));
-}
-    
 $.fn.skootch.ver = function() { return ver; };
 
 $.fn.skootch.defaults = {
