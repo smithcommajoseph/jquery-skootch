@@ -1,7 +1,10 @@
 /**
  * jQuery Skootch: The JQuery Skootch plugin allows you to easily animate items into the viewport 
- * and will shift (skootch) the already visible DOM items appropiately.
- * http://
+ * and will shift (skootch) the already visible DOM items appropriately.
+ *
+ * 2011 - Joseph Smith
+ *
+ * http://jquery-skootch.twohard.com/
  * 
  * @param option
  * @param arg2
@@ -52,7 +55,7 @@ $.fn.skootch = function(option, arg2) {
                     for(var i=0; i < $(params.invaderLinks).length; i++){
                         if(e.target === $(params.invaderLinks)[i]) { isinvader = true; }
                     }
-
+                    
                     //call retreat and act appropriately
                     if(isinvader === true) {
                         $trigger.bind(params.triggerEvent, clickHandler);
@@ -72,7 +75,8 @@ $.fn.skootch = function(option, arg2) {
                                 }
 
                             });
-                        } else {
+                        } 
+                        else {
                             //fire our callback
                             if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
                             else {
@@ -269,9 +273,10 @@ function totalWidth($elem, useMargins){
     var total;
     useMargins = useMargins || false;
     
-    total = $elem.width() + parseFloat($elem.css('padding-right')) + parseFloat($elem.css('padding-left'));
     if(useMargins === true) { 
-        total += parseFloat($elem.css('margin-right')) + parseFloat($elem.css('margin-left'));
+        total = parseFloat($elem.outerWidth(true));
+    } else {
+        total = parseFloat($elem.outerWidth(false));
     }
     return total;
 }
