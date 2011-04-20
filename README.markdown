@@ -4,3 +4,18 @@ The JQuery Skootch plugin allows you to easily animate items into the viewport a
 ##Status
 currently Skootch is still in alpha and will have a stable release soon
 
+##Version History
+
+####1.0alpha3
+- added 'smart' skootches
+- re-worked what elems skootch gets bound to for added flexiblity (read now binding to 'skootch-trigger' rather than 'skootch-indigen')
+- added 'retreat' and 'destroy' functionality
+- minified version now included
+- general optimization
+
+####1.0alpha2
+- general cleanup
+- flailing to find direction
+
+####1.0alpha1
+- initial (only semi-functional) release.
