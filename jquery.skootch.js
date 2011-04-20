@@ -1,13 +1,14 @@
-/**
+/*!
  * jQuery Skootch: The JQuery Skootch plugin allows you to easily animate items into the viewport 
  * and will shift (skootch) the already visible DOM items appropriately.
  *
+ * http://jquery-skootch.twohard.com/
+ *
  * 2011 - Joseph Smith
  *
- * http://jquery-skootch.twohard.com/
- * 
- * @param option
- * @param arg2
+ * Dependencies:
+ * jQuery 1.5 (jquery.com)
+ *
  */
  
 (function($) {
