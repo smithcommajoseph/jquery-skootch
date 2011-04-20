@@ -16,15 +16,18 @@ $.fn.skootch = function(option, arg2) {
     
     return this.each(function(){
         var $trigger = $(o.s, o.c),
-        opts = setParams(this, option, arg2),
-        params = opts.params || null,
-        nextAction = opts.nextAction || null,
-        nextActionCallback = opts.nextActionCallback || null;
+            opts = setParams(this, option, arg2),
+            params = opts.params || null,
+            nextAction = opts.nextAction || null,
+            nextActionCallback = opts.nextActionCallback || null;
         
         if(nextAction !== null){
             switch(nextAction){
-                case'retreat':
+                case 'retreat':
                     retreat($trigger, params, nextActionCallback);
+                    break;
+                case 'destroy':
+                    destroy($trigger, this, nextActionCallback);
                     break;
             }
         } 
@@ -133,10 +136,8 @@ function setParams(node, options, arg2){
     if(typeof options == 'string') {
         switch(options){
             case 'destroy':
-                params = $(node).data('skootch.params');
-                if(!params) { return false; }
-                $(node).removeData('skootch.params');
-                destroy(node, params);
+                nextAction = 'destroy';
+                if(arg2 !== undefined && arg2.constructor == Function){ nextActionCallback = arg2; }
                 break;
             case 'retreat':
                 nextAction = 'retreat';
@@ -203,15 +204,20 @@ function setDirectionMaps($trigger, params){
     }
 }
 
-function destroy(node, params){
+function destroy($trigger, node, callback){
+    var params = $(node).data('skootch.params');
+    if(!params) { return false; }
+    
+    $(node).removeData('skootch.params');
     $trigger.unbind(params.triggerEvent);
-    $(node).unwrap();
-    $(params.invader).removeAttr('style');
+    $(params.indigen).unwrap();
+    $(params.invader+', '+params.indigen).removeAttr('style');
+
+    if(callback !== null) { callback(); }
 }
 
 //TODO: could optimize this by not calling setDirectionMaps fn every advance/retreat.
 //while this works as is, the animations use more CPU than they should.
-
 function advance($trigger, params, animatecallback){
     if($(params.indigen).data('state') != 'Open'){
         var animap = setDirectionMaps($(params.indigen), params);
