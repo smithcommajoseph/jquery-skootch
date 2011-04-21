@@ -7,7 +7,7 @@
  * 2011 - Joseph Smith
  *
  * Dependencies:
- * jQuery 1.5 (jquery.com)
+ * jQuery 1.4+ (jquery.com)
  *
  */
  
@@ -89,7 +89,7 @@ $.fn.skootch = function(option, arg2) {
                     //
                     else {
                         //initial pass
-                        if(typeof $(params.indigen).data('skootch.state') == 'undefined'){ 
+                        if(typeof $(params.indigen).data('skootch.state') == 'undefined' || $(params.indigen).data('skootch.state') === null){                             
                             $(params.indigen).data({'skootch.state': 'Closed', 'justify': params.justify});
                         }
                         //if we are closed, advance
