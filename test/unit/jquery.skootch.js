@@ -13,7 +13,8 @@
                                          });
         },
         skootchLeftTeardown = function(){
-            // $('#side').remove();
+            $('#skootch-trigger').skootch('destroy');
+            $('#side').remove();
         };
     
     $(document).ready(function(){
@@ -37,7 +38,7 @@
 
             equals(expected, actual, 'There should be '+expected+' defaults');
 
-            //are the defaults what we thing they should be?
+            //are the defaults what we think they should be?
             equals(typeof $.fn.skootch.defaults.advanceEasing, 'string', '$.fn.skootch.defaults.advanceEasing should exist and be typeof "string"');
             equals(typeof $.fn.skootch.defaults.advanceSpeed, 'string', '$.fn.skootch.defaults.advanceSpeed should exist and be typeof = "string"');
             equals(typeof $.fn.skootch.defaults.indigen, 'string', '$.fn.skootch.defaults.indigen should exist and be typeof "string"');
@@ -58,7 +59,7 @@
 
         });
 
-        module("Skootch Left", {setup: skootchLeftSetup});
+        module("Skootch Left", {setup: skootchLeftSetup, teardown: skootchLeftTeardown});
         
         test("Setup", function(){
 
@@ -69,8 +70,6 @@
             equals($('#wrap').css('left'), 'auto', 'Indigen container should have a left position of "auto"');
 
         });
-
-        module("Skootch Left Functionality");
         
         test("Advance", function(){
 
@@ -80,13 +79,16 @@
 
             //advance and check positions
             $('#skootch-trigger').skootch('advance', function(){
+                
                 //using setTimeout, because the animation callback that we pass to advance() 
                 //fires post #skootch-invader animation NOT post the #indigen animation.
                 setTimeout(function(){
                     equals($('#wrap').css('position'), 'relative', 'Indigen container should have a position of "relative" post advance');
                     equals($('#wrap').css('left'), hund, 'Indigen container should be left by '+hund+' post advance');
                     equals($('#skootch-invader').css('left'), '0px', 'Skootch invader should be left by 0px post advance');
+                    
                     start();
+                    
                 }, $.fn.skootch.defaults.advanceSpeed);
             });
         });
@@ -97,27 +99,32 @@
 
             stop();
 
-            //retreat and check positions
-            $('#skootch-trigger').skootch('retreat', function(){
-                //using setTimeout, because the animation callback that we pass to retreat() 
-                //fires post #skootch-invader animation NOT post the #indigen animation.
-                setTimeout(function(){
-                    equals($('#wrap').css('position'), 'relative', 'Indigen container should have a position of "relative" post retreat');
-                    equals($('#wrap').css('left'), '0px', 'Indigen wrap should be left by 0px post retreat');
-                    equals($('#skootch-invader').css('left'), '-'+hund, 'Skootch invader should be left by -'+hund+' post retreat');
-                    start();
-                }, $.fn.skootch.defaults.retreatSpeed);
+            $('#skootch-trigger').skootch('advance', function(){
+                
+                //retreat and check positions
+                $('#skootch-trigger').skootch('retreat', function(){
+                    
+                    //using setTimeout, because the animation callback that we pass to retreat() 
+                    //fires post #skootch-invader animation NOT post the #indigen animation.
+                    setTimeout(function(){
+                        equals($('#wrap').css('position'), 'static', 'Indigen container should have a position of "static" post retreat');
+                        equals($('#wrap').css('left'), 'auto', 'Indigen wrap should be left by "auto" post retreat');
+                        equals($('#skootch-invader').css('left'), '-'+hund, 'Skootch invader should be left by -'+hund+' post retreat');
+                        
+                        start();
+                        
+                    }, $.fn.skootch.defaults.retreatSpeed);
+                });
             });
+            
         });
-
-        module("Skootch Left Destroy", {teardown: skootchLeftTeardown});
         
         test("Destroy", function(){
-
+        
             expect(2);
-
+        
             stop();
-
+        
             $('#skootch-trigger').skootch('destroy', function(){
                 strictEqual($('#wrap-skootch-wrap').length, 0, 'Indigen container wrap length should be 0 post destroy');
                 strictEqual($('#wrap').attr('style'), undefined, 'Indigen container should have no inline styles post destroy');
