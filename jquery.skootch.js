@@ -27,6 +27,9 @@ $.fn.skootch = function(option, arg2) {
         
         if(nextAction !== null){
             switch(nextAction){
+                case 'advance':
+                    advance($trigger, params, nextActionCallback);
+                    break;
                 case 'retreat':
                     retreat($trigger, params, nextActionCallback);
                     break;
@@ -137,6 +140,10 @@ function setParams(node, options, arg2){
                 break;
             case 'retreat':
                 nextAction = 'retreat';
+                if(arg2 !== undefined && arg2.constructor == Function){ nextActionCallback = arg2; }
+                break;
+            case 'advance':
+                nextAction = 'advance';
                 if(arg2 !== undefined && arg2.constructor == Function){ nextActionCallback = arg2; }
                 break;
             default:
