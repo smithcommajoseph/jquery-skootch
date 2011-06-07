@@ -40,7 +40,7 @@
 
             //are the defaults what we think they should be?
             equals(typeof $.fn.skootch.defaults.advanceEasing, 'string', '$.fn.skootch.defaults.advanceEasing should exist and be typeof "string"');
-            equals(typeof $.fn.skootch.defaults.advanceSpeed, 'string', '$.fn.skootch.defaults.advanceSpeed should exist and be typeof = "string"');
+            equals(typeof $.fn.skootch.defaults.advanceSpeed, 'number', '$.fn.skootch.defaults.advanceSpeed should exist and be typeof = "number"');
             equals(typeof $.fn.skootch.defaults.indigen, 'string', '$.fn.skootch.defaults.indigen should exist and be typeof "string"');
             equals(typeof $.fn.skootch.defaults.indigenUseMargins, 'boolean', '$.fn.skootch.defaults.indigenUseMargins should exist and be typeof "boolean"');
             equals(typeof $.fn.skootch.defaults.invader, 'string', '$.fn.skootch.defaults.invader should exist and be typeof "string"');
@@ -50,7 +50,7 @@
             equals(typeof $.fn.skootch.defaults.justify, 'string', '$.fn.skootch.defaults.justify should exist and be typeof "string"');
             equals(typeof $.fn.skootch.defaults.minInvaderMargin, 'number', '$.fn.skootch.defaults.minInvaderMargin should exist and be typeof "number"');
             equals(typeof $.fn.skootch.defaults.retreatEasing, 'string', '$.fn.skootch.defaults.retreatEasing should exist and be typeof "string"');
-            equals(typeof $.fn.skootch.defaults.retreatSpeed, 'string', '$.fn.skootch.defaults.retreatSpeed should exist and be typeof "string"');
+            equals(typeof $.fn.skootch.defaults.retreatSpeed, 'number', '$.fn.skootch.defaults.retreatSpeed should exist and be typeof "number"');
             equals(typeof $.fn.skootch.defaults.smart, 'boolean', '$.fn.skootch.defaults.smart should exist and be typeof "boolean"');
             equals(typeof $.fn.skootch.defaults.triggerClosed, 'string', '$.fn.skootch.defaults.triggerClosed should exist and be typeof "string"');
             equals(typeof $.fn.skootch.defaults.triggerEvent, 'string', '$.fn.skootch.defaults.triggerEvent should exist and be typeof "string"');
@@ -79,20 +79,27 @@
 
             //advance and check positions
             $('#skootch-trigger').skootch('advance', function(){
-                
+                var wrapPosType, wrapLeftPos, skootchInvaderPos;
                 //using setTimeout, because the animation callback that we pass to advance() 
                 //fires post #skootch-invader animation NOT post the #indigen animation.
                 setTimeout(function(){
-                    equals($('#wrap').css('position'), 'relative', 'Indigen container should have a position of "relative" post advance');
-                    equals($('#wrap').css('left'), hund, 'Indigen container should be left by '+hund+' post advance');
-                    equals($('#skootch-invader').css('left'), '0px', 'Skootch invader should be left by 0px post advance');
+                    wrapPosType = $('#wrap').css('position');
+                    wrapLeftPos = $('#wrap').css('left');
+                    skootchInvaderPos = $('#skootch-invader').css('left');
                     
-                    start();
+                    $('#skootch-trigger').skootch('retreat', function(){
+                        equals(wrapPosType, 'relative', 'Indigen container should have a position of "relative" post advance');
+                        equals(wrapLeftPos, hund, 'Indigen container should be left by '+hund+' post advance');
+                        equals(skootchInvaderPos, '0px', 'Skootch invader should be left by 0px post advance');
+
+                        start();
+                    });
                     
                 }, $.fn.skootch.defaults.advanceSpeed);
             });
+            
         });
-
+        
         test("Retreat", function(){
 
             expect(3);
