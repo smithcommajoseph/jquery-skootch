@@ -13,117 +13,9 @@
  
 (function($) {
     
-var ver = '1.0';
+var ver = '1.0',
 
-$.fn.skootch = function(option, arg2) {
-    var o = { s: this.selector, c: this.context };
-    
-    return this.each(function(){
-        var $trigger = $(o.s, o.c),
-            opts = setParams(this, option, arg2),
-            params = opts.params || null,
-            nextAction = opts.nextAction || null,
-            nextActionCallback = opts.nextActionCallback || null;
-        
-        if(nextAction !== null){
-            switch(nextAction){
-                case 'advance':
-                    advance($trigger, params, nextActionCallback);
-                    break;
-                case 'retreat':
-                    retreat($trigger, params, nextActionCallback);
-                    break;
-                case 'destroy':
-                    destroy($trigger, this, nextActionCallback);
-                    break;
-            }
-        } 
-        else {
-            if(params !== null) {
-                //the $trigger node wrapper id
-                var indigenwrap = $(params.indigen).attr('id')+'-'+params.wrapperSuffix,
-
-                //wrap $params.indigen and set '$indigenwrapper' to the res
-                $indigenwrapper = $(params.indigen).wrap(function() {
-                    return '<div id="'+indigenwrap+'" syle="position: relative;"/>';
-                });
-
-
-                var clickHandler = function(e){
-                    var isinvader = false,
-                        nonInvaderClicks = function(){
-                            //fire our custom callback if it exists
-                            if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
-                            //otherwise...
-                            else {
-                                //if we are clicking on something with an href set the window.location
-                                //otherwise, rebind our click
-                                if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
-                                    window.location = $(e.target).attr('href');
-                                }
-                                //not a fan of this logic...
-                                else if($(e.target).attr('type') === 'submit') {
-                                    var $form = $(e.target).closest('form');
-                                }
-
-                            }
-                        };
-
-                    //unbind
-                    $trigger.unbind(params.triggerEvent);
-
-                    //set the isinvader true if the e.target in the invaderLinks obj
-                    for(var i=0; i < $(params.invaderLinks).length; i++){
-                        if(e.target === $(params.invaderLinks)[i]) { isinvader = true; }
-                    }
-                    
-                    //call retreat and act appropriately
-                    if(isinvader === true) {
-                        $trigger.bind(params.triggerEvent, clickHandler);
-
-                        if(params.invaderClickRetreat === true){
-                            retreat($trigger, params, function(){ nonInvaderClicks(); });
-                        } 
-                        else {
-                            nonInvaderClicks();
-                        }
-                    }
-
-                    //
-                    else {
-                        //initial pass
-                        if(typeof $(params.indigen).data('skootch.state') == 'undefined' || $(params.indigen).data('skootch.state') === null){                             
-                            $(params.indigen).data({'skootch.state': 'Closed', 'justify': params.justify});
-                        }
-                        //if we are closed, advance
-                        if($(params.indigen).data('skootch.state') == 'Closed'){
-                            advance($trigger, params, function(){
-                                // rebind
-                                $trigger.bind(params.triggerEvent, clickHandler);
-                            });
-                        }
-                        //if we are open, retreat
-                        else{
-                            retreat($trigger, params, function(){
-                                // rebind
-                                $trigger.bind(params.triggerEvent, clickHandler);
-                            });
-                        }
-                    }
-
-                    return false;
-                };
-
-                return $('#'+$trigger.attr('id')+', '+params.invaderLinks).bind(params.triggerEvent, clickHandler);
-            
-            }
-        }
-    });
-    
-    
-};
-
-function setParams(node, options, arg2){
+_setParams = function(node, options, arg2){
     var overrides = {},
         params = {},
         opts = {},
@@ -135,15 +27,9 @@ function setParams(node, options, arg2){
     if(typeof options == 'string') {
         switch(options){
             case 'destroy':
-                nextAction = 'destroy';
-                if(arg2 !== undefined && arg2.constructor == Function){ nextActionCallback = arg2; }
-                break;
             case 'retreat':
-                nextAction = 'retreat';
-                if(arg2 !== undefined && arg2.constructor == Function){ nextActionCallback = arg2; }
-                break;
             case 'advance':
-                nextAction = 'advance';
+                nextAction = options;
                 if(arg2 !== undefined && arg2.constructor == Function){ nextActionCallback = arg2; }
                 break;
             default:
@@ -159,9 +45,9 @@ function setParams(node, options, arg2){
     
     opts = {nextAction: nextAction, nextActionCallback: nextActionCallback, params: params};
     return opts;
-}
+},
 
-function setDirectionMaps($trigger, params){
+_setDirectionMaps = function($trigger, params){
     var invaderWidth = $(params.invader).outerWidth(true),
         indigenSR = $(params.indigen).css(params.justify),
         indigenSA;
@@ -205,9 +91,9 @@ function setDirectionMaps($trigger, params){
         case 'right':
             return rightmap;
     }
-}
+},
 
-function destroy($trigger, node, callback){
+_destroy = function($trigger, node, callback){
     var params = $(node).data('skootch.params');
     if(!params) { return false; }
     
@@ -217,13 +103,13 @@ function destroy($trigger, node, callback){
     $(params.invader+', '+params.indigen).removeAttr('style');
 
     if(callback !== null) { callback(); }
-}
+},
 
-//TODO: could optimize this by not calling setDirectionMaps fn every advance/retreat.
+//TODO: could optimize this by not calling _setDirectionMaps fn every advance/retreat.
 //while this works as is, the animations use more CPU than they should.
-function advance($trigger, params, animatecallback){
+_advance = function($trigger, params, animatecallback){
     if($(params.indigen).data('skootch.state') != 'Open'){
-        var animap = setDirectionMaps($(params.indigen), params);
+        var animap = _setDirectionMaps($(params.indigen), params);
         $(params.indigen).data('skootch.state', 'Open');
     
         $('body').css({"overflow-x": "hidden"});
@@ -232,11 +118,11 @@ function advance($trigger, params, animatecallback){
         $trigger.removeClass(params.triggerClosed).addClass(params.triggerOpen);
         $(params.invader).animate(animap.invader_advance, params.advanceSpeed, params.advanceEasing, animatecallback);
     }
-}
+},
 
-function retreat($trigger, params, animatecallback){
+_retreat = function($trigger, params, animatecallback){
     if($(params.indigen).data('skootch.state') == 'Open'){
-        var animap = setDirectionMaps($(params.indigen), params);
+        var animap = _setDirectionMaps($(params.indigen), params);
         $(params.indigen).data('skootch.state', 'Closed');
 
         $(params.indigen).animate(animap.indigen_retreat, params.retreatSpeed, params.retreatEasing, function(){
@@ -247,7 +133,111 @@ function retreat($trigger, params, animatecallback){
         $trigger.removeClass(params.triggerOpen).addClass(params.triggerClosed);
         $(params.invader).animate(animap.invader_retreat, params.retreatSpeed, params.retreatEasing, animatecallback);
     }
-}
+};
+
+$.fn.skootch = function(option, arg2) {
+    var o = { s: this.selector, c: this.context };
+    
+    return this.each(function(){
+        var $trigger = $(o.s, o.c),
+            opts = _setParams(this, option, arg2),
+            params = opts.params || null,
+            nextAction = opts.nextAction || null,
+            nextActionCallback = opts.nextActionCallback || null;
+        
+        if(nextAction !== null){
+            switch(nextAction){
+                case 'advance':
+                    _advance($trigger, params, nextActionCallback);
+                    break;
+                case 'retreat':
+                    _retreat($trigger, params, nextActionCallback);
+                    break;
+                case 'destroy':
+                    _destroy($trigger, this, nextActionCallback);
+                    break;
+            }
+        } 
+        else {
+            // if(params !== null) {
+                //the $trigger node wrapper id
+                var indigenwrap = $(params.indigen).attr('id')+'-'+params.wrapperSuffix,
+
+                //wrap $params.indigen and set '$indigenwrapper' to the res
+                $indigenwrapper = $(params.indigen).wrap(function() {
+                    return '<div id="'+indigenwrap+'" syle="position: relative;"/>';
+                });
+
+                return $('#'+$trigger.attr('id')+', '+params.invaderLinks).bind(params.triggerEvent, clickHandler = function(e){
+                    var isinvader = false,
+                        nonInvaderClicks = function(){
+                            //fire our custom callback if it exists
+                            if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
+                            //otherwise...
+                            else {
+                                //if we are clicking on something with an href set the window.location
+                                //otherwise, rebind our click
+                                if($(e.target).attr('href') !== '' || typeof $(e.target).attr('href') !== undefined ){
+                                    window.location = $(e.target).attr('href');
+                                }
+                                //not a fan of this logic...
+                                else if($(e.target).attr('type') === 'submit') {
+                                    var $form = $(e.target).closest('form');
+                                }
+
+                            }
+                        };
+
+                    //unbind
+                    $trigger.unbind(params.triggerEvent);
+
+                    //set the isinvader true if the e.target in the invaderLinks obj
+                    for(var i=0; i < $(params.invaderLinks).length; i++){
+                        if(e.target === $(params.invaderLinks)[i]) { isinvader = true; }
+                    }
+                    
+                    //call retreat and act appropriately
+                    if(isinvader === true) {
+                        $trigger.bind(params.triggerEvent, clickHandler);
+
+                        if(params.invaderClickRetreat === true){
+                            _retreat($trigger, params, function(){ nonInvaderClicks(); });
+                        } 
+                        else {
+                            nonInvaderClicks();
+                        }
+                    }
+
+                    //
+                    else {
+                        //initial pass
+                        if(typeof $(params.indigen).data('skootch.state') == 'undefined' || $(params.indigen).data('skootch.state') === null){                             
+                            $(params.indigen).data({'skootch.state': 'Closed', 'justify': params.justify});
+                        }
+                        //if we are closed, advance
+                        if($(params.indigen).data('skootch.state') == 'Closed'){
+                            _advance($trigger, params, function(){
+                                // rebind
+                                $trigger.bind(params.triggerEvent, clickHandler);
+                            });
+                        }
+                        //if we are open, retreat
+                        else{
+                            _retreat($trigger, params, function(){
+                                // rebind
+                                $trigger.bind(params.triggerEvent, clickHandler);
+                            });
+                        }
+                    }
+
+                    return false;
+                });
+            
+            // }
+        }
+    });
+    
+};
 
 $.fn.skootch.ver = function() { return ver; };
 
