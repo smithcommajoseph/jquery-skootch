@@ -243,7 +243,7 @@ $.fn.skootch.ver = function() { return ver; };
 
 $.fn.skootch.defaults = {
     advanceEasing:      'swing', //advancing easing function
-    advanceSpeed:       'slow', //advancing animation speed
+    advanceSpeed:       600, //advancing animation speed
     indigen:            '#skootch-indigen', //the id or class name used for the element that will be skootched
     indigenUseMargins:  false, //should we use Margins to calculate the total width of the $trigger elem (the container that skootch is invoked upon) 
     invader:            '#skootch-invader', //the id or class name used element that will skootch into the window
@@ -253,7 +253,7 @@ $.fn.skootch.defaults = {
     justify:            'left', //skootch trigger justification
     minInvaderMargin:   40, //the minimum amount of margin applied to the invader elem - ONLY USED IF smart = true
     retreatEasing:      'swing', //retreating easing function
-    retreatSpeed:       'slow', //retreating animation speed
+    retreatSpeed:       600, //retreating animation speed
     smart:              true, // should we change the amount we animate our skootched elems by based on window size?
     triggerClosed:      'skootch-trigger-closed', //trigger closed status class
     triggerEvent:       'click.skootch', //name of Event that drives Skootch 
