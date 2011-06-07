@@ -6,6 +6,9 @@ currently Skootch is still in alpha and will have a stable release soon
 
 ##Version History
 
+####1.0alpha5
+- minor internal reworkings
+
 ####1.0alpha4
 - now works jQuery 1.4 or greater (prior to this release only 1.5+ was supported)
 
