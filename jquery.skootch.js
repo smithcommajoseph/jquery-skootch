@@ -98,7 +98,7 @@ _destroy = function($trigger, node, callback){
 	if(!params) { return false; }
 	
 	$(node).removeData('skootch.params');
-	$trigger.unbind(params.triggerEvent);
+	$trigger.unbind('click.skootch');
 	$(params.indigen).unwrap();
 	$(params.invader+', '+params.indigen).removeAttr('style');
 	
@@ -112,7 +112,7 @@ _advance = function($trigger, params, animatecallback){
 		var animap = _setDirectionMaps($(params.indigen), params);
 		$(params.indigen).data('skootch.state', 'Open');
 		
-		$('body').css({"overflow-x": "hidden"});
+		if(params.squashOverflow !== false) { $('body').css({"overflow-x": "hidden"}); }
 		$(params.indigen).css('position', 'relative').animate(animap.indigen_advance, params.advanceSpeed, params.advanceEasing);
 		
 		$trigger.removeClass(params.triggerClosed).addClass(params.triggerOpen);
@@ -126,7 +126,7 @@ _retreat = function($trigger, params, animatecallback){
 		$(params.indigen).data('skootch.state', 'Closed');
 		
 		$(params.indigen).animate(animap.indigen_retreat, params.retreatSpeed, params.retreatEasing, function(){
-			$('body').css({"overflow-x": "auto"});
+			if(params.squashOverflow !== false) { $('body').css({"overflow-x": "auto"}); }
 			$(params.indigen).removeAttr('style');
 		});
 		
@@ -166,7 +166,7 @@ $.fn.skootch = function(option, arg2) {
 					return '<div id="'+indigenwrap+'" syle="position: relative;"/>';
 				});
 			
-			return $('#'+$trigger.attr('id')+', '+params.invaderLinks).bind(params.triggerEvent, clickHandler = function(e){
+			return $('#'+$trigger.attr('id')+', '+params.invaderLinks).bind('click.skootch', clickHandler = function(e){
 				var isinvader = false,
 					nonInvaderClicks = function(){
 						//fire our custom callback if it exists
@@ -187,7 +187,7 @@ $.fn.skootch = function(option, arg2) {
 					};
 					
 				//unbind
-				$trigger.unbind(params.triggerEvent);
+				$trigger.unbind('click.skootch');
 				
 				//set the isinvader true if the e.target in the invaderLinks obj
 				for(var i=0; i < $(params.invaderLinks).length; i++){
@@ -196,7 +196,7 @@ $.fn.skootch = function(option, arg2) {
 				
 				//call retreat and act appropriately
 				if(isinvader === true) {
-					$trigger.bind(params.triggerEvent, clickHandler);
+					$trigger.bind('click.skootch', clickHandler);
 					
 					if(params.invaderClickRetreat === true){
 						_retreat($trigger, params, function(){ nonInvaderClicks(); });
@@ -212,14 +212,14 @@ $.fn.skootch = function(option, arg2) {
 					if($(params.indigen).data('skootch.state') == 'Closed'){
 						_advance($trigger, params, function(){
 							// rebind
-							$trigger.bind(params.triggerEvent, clickHandler);
+							$trigger.bind('click.skootch', clickHandler);
 						});
 					}
 					//if we are open, retreat
 					else{
 						_retreat($trigger, params, function(){
 							// rebind
-							$trigger.bind(params.triggerEvent, clickHandler);
+							$trigger.bind('click.skootch', clickHandler);
 						});
 					}
 				}
@@ -236,7 +236,7 @@ $.fn.skootch.defaults = {
 	advanceEasing: 			'swing', //advancing easing function
 	advanceSpeed: 			600, //advancing animation speed
 	indigen: 				'#skootch-indigen', //the id or class name used for the element that will be skootched
-	indigenUseMargins: 		false, //should we use Margins to calculate the total width of the $trigger elem (the container that skootch is invoked upon) 
+	indigenUseMargins: 		false, //should we use Margins to calculate the total width of the $indigen elem (the container that skootch is invoked upon) 
 	invader: 				'#skootch-invader', //the id or class name used element that will skootch into the window
 	invaderClickCallback: 	null, //callback for the invaderLinks on click
 	invaderClickRetreat: 	true, //should everything skootch back to it's start position if a invaderlink is clicked?
@@ -246,8 +246,8 @@ $.fn.skootch.defaults = {
 	retreatEasing: 			'swing', //retreating easing function
 	retreatSpeed: 			600, //retreating animation speed
 	smart: 					true, // should we change the amount we animate our skootched elems by based on window size?
+	squashOverflow: 		true, // should overflow-x be present when the invader is in view?
 	triggerClosed: 			'skootch-trigger-closed', //trigger closed status class
-	triggerEvent: 			'click.skootch', //name of Event that drives Skootch 
 	triggerOpen: 			'skootch-trigger-open', // trigger open status class
 	wrapperSuffix: 			'skootch-wrap' //the div that will wrap our DOM node that will be skootched by our 'invader'
 };

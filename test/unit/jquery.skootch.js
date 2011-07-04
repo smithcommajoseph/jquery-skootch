@@ -52,8 +52,9 @@
             equals(typeof $.fn.skootch.defaults.retreatEasing, 'string', '$.fn.skootch.defaults.retreatEasing should exist and be typeof "string"');
             equals(typeof $.fn.skootch.defaults.retreatSpeed, 'number', '$.fn.skootch.defaults.retreatSpeed should exist and be typeof "number"');
             equals(typeof $.fn.skootch.defaults.smart, 'boolean', '$.fn.skootch.defaults.smart should exist and be typeof "boolean"');
+            equals(typeof $.fn.skootch.defaults.squashOverflow, 'boolean', '$.fn.skootch.defaults.squashOverflow should exist and be typeof "boolean"');
+
             equals(typeof $.fn.skootch.defaults.triggerClosed, 'string', '$.fn.skootch.defaults.triggerClosed should exist and be typeof "string"');
-            equals(typeof $.fn.skootch.defaults.triggerEvent, 'string', '$.fn.skootch.defaults.triggerEvent should exist and be typeof "string"');
             equals(typeof $.fn.skootch.defaults.triggerOpen, 'string', '$.fn.skootch.defaults.triggerOpen should exist and be typeof "string"');
             equals(typeof $.fn.skootch.defaults.wrapperSuffix, 'string', '$.fn.skootch.defaults.wrapperSuffix should exist and be typeof "string"');
 
