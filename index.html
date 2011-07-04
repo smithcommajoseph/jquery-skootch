@@ -40,7 +40,7 @@
 			<p>The <code>indigen</code> will be shifted/skootched out of the way to make room for the <code>invader</code>. This container is often the page's primary content.</p>
 			
 			<h2 id="usage">Basic Usage</h2>
-            <p>Assuming your: HTML has the following structure:</p>
+            <p>Assuming your HTML has the following structure:</p>
 			<pre class="codeblock">&#60;body&#62;
   &#60;div id="<span class="sTr">skootch-trigger</span>"&#62;
     <span class="sTr">The trigger element</span>
@@ -89,7 +89,7 @@
 			<p>OR</p>
 			<pre class="codeblock"><span class="jQ">$</span>('<span class="sTr">trigger-selector</span>').skootch(<span>settings:Object<span>);</pre>
 			<p>Initializes skootch on the selected element(s) with the passed settings.</p>
-			<p>See 'Properties' section below for more info on overriding the default params.</p>
+			<p>See <a href="#overrides">'Overriding default params'</a> section below for more info on overriding the default params.</p>
 			
 			<p><strong>Advance:</strong></p>	
 			<pre class="codeblock"><span class="jQ">$</span>('<span class="sTr">trigger-selector</span>').skootch('<span class="sTr">advance</span>', <span class="nUm">callback</span>);</pre>
@@ -123,6 +123,76 @@
   triggerOpen:          '<span class="sTr">skootch-trigger-open</span>',
   wrapperSuffix:        '<span class="sTr">skootch-wrap</span>'
 };</pre>
+
+			<p><strong>advanceEasing:String = "easing fn name"<br>
+			default = "swing"</strong><br>
+			advancing easing function.</p>
+
+			<p><strong>advanceSpeed:String = "easing speed"<br>
+			default = "slow"</strong><br>
+			advancing animation speed.</p>
+
+			<p><strong>indigen:String = "id-or-classname"<br>
+			default = "#skootch-indigen"</strong><br>
+			the id or class name used for the element that will be skootched.</p>
+
+			<p><strong>indigenUseMargins:Boolean<br>
+			default = false</strong><br>
+			should we use Margins to calculate the total width of the $trigger elem (the container that skootch is invoked upon).</p>
+
+			<p><strong>invader:String = "id-or-classname"<br>
+			default = "#skootch-invader"</strong><br>
+			the id or class name used element that will skootch into the window.</p>
+
+			<p><strong>invaderClickCallback:Function<br>
+			default = null</strong><br>
+			callback for the invaderLinks on click.</p>
+
+			<p><strong>invaderClickRetreat:Boolean<br>
+			default = true</strong><br>
+			should everything skootch back to it's start position if a invaderlink is clicked?</p>
+
+			<p><strong>invaderLinks:String = "id-or-classnames"<br>
+			default = "#skootch-invader a, #skootch-invader input[type=submit]"</strong><br>
+			if there are links in the invader elem these are them.</p>
+
+			<p><strong>justify:String = "direction"<br>
+			default = "left"</strong><br>
+			skootch trigger justification, currently only 'right' or 'left' are supported.</p>
+
+			<p><strong>minInvaderMargin:Number = "num in pixels"<br>
+			default = 40</strong><br>
+			the minimum amount of margin applied to the invader elem - ONLY USED IF smart = true.</p>
+
+			<p><strong>retreatEasing:String = "easing fn name"<br>
+			default = "swing"</strong><br>
+			retreat easing function.</p>
+
+			<p><strong>retreatSpeed:String = "easing speed"<br>
+			default = "slow"</strong><br>
+			retreat animation speed.</p>
+
+			<p><strong>smart:Boolean<br>
+			default = true</strong><br>
+			should we change the amount we animate our skootched elems based on window size?</p>
+
+			<p><strong>triggerClosed:String = "classname-without-."<br>
+			default = "skootch-trigger-closed"</strong><br>
+			trigger closed status class.</p>
+
+			<p><strong>triggerEvent:String = "event.namespace"<br>
+			default = "click.skootch"</strong><br>
+			name of Event that drives Skootch. (will be deprecated in future releases)</p>
+
+			<p><strong>triggerOpen:String = "classname-without-."<br>
+			default = "skootch-trigger-open"</strong><br>
+			trigger open status class.</p>
+
+			<p><strong>wrapperSuffix:String = "suffix-added-to-wrapper"<br>
+			default = "skootch-wrap"</strong><br>
+			the div that will wrap our DOM node that will be skootched by our 'invader'.</p>
+			
+			<h2 id="overrides">Overriding default params</h2>
             <p>The default options can be overridden by passing a property name and value as separate parameters...</p>
             <pre class="codeblock"><span class="jQ">$</span>(<span class="sTr">"#div"</span>).skootch(<span class="sTr">"justify"</span>, <span class="sTr">"right"</span>);</pre>
             
