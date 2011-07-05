@@ -74,10 +74,11 @@ html {
 #main{ 
   display:block;
   padding-bottom:80px;
+  min-width:1000px;
 }
 #github img{ 
 	border: 0px;
-	position: absolute;
+	position: fixed;
 	right: 0px;
 	top: 0px;
 	z-index:9999;
