@@ -1,10 +1,20 @@
 ##What it does.
 The JQuery Skootch plugin allows you to easily animate items into the viewport and will shift (skootch) the already visible DOM items appropiately.  
 
-##Status
-currently Skootch is still in alpha and will have a stable release soon
+##Info
+Docs can be found [here](http://technicolorenvy.github.com/jquery-skootch/)
+Usage Examples [here](http://technicolorenvy.github.com/jquery-skootch/examples/index.html) .
+Find a bug or have a feature request? Create an issue [here](https://github.com/technicolorenvy/jquery-skootch/issues) and let me know.
 
 ##Version History
+
+####1.0beta2
+- Removing triggerEvent param
+- Adding squashOverflow param
+- Improved Documentation
+
+####1.0beta1
+- Adding better Docs
 
 ####1.0alpha5
 - minor internal reworkings
