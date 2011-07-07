@@ -74,7 +74,7 @@ html {
 #main{ 
   display:block;
   padding-bottom:80px;
-  min-width:1000px;
+  min-width:840px;
 }
 #github img{ 
 	border: 0px;
@@ -116,7 +116,7 @@ html {
 	border-radius: 10px;
 
 	padding: 20px;
-	width: 860px;
+	width: 700px;
 	margin: 0 auto;
 	z-index: 2;
 }
@@ -126,7 +126,7 @@ html {
 	font-size: 20px;
 	margin-top: 24px;
 	padding: 5px;
-	width: 100%;
+	width: 690px;
 	} 
 #main p{ 
 	display:block;
