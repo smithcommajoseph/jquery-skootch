@@ -99,6 +99,34 @@ html {
 	font: 50px 'Paytone One', arial, serif;
 	-webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0.5)));
 	}
+.divider{ 
+	color:#aaa;
+	position: relative;
+	bottom: 9px; 
+	font-size: 20px;
+	}
+#downloads{
+	position:relative;
+	display:block;
+	text-align: center;
+	padding-bottom: 10px;
+}
+#downloads a{
+	color: #666;
+	display:inline-block;
+	padding: 0 5px;
+	border-bottom: none; 
+	font-size: 12px; 
+	line-height: 15px;
+	}
+#downloads a span{
+	color: #444;
+	font: 19px 'Paytone One', arial, serif;
+	}
+#downloads a:hover span{
+	color: #9c53c9;
+}
+
 #skootch-indigen {	
 	display: block;
 	background-color: rgba(255, 255, 255, 0.9);
@@ -116,7 +144,7 @@ html {
 	border-radius: 10px;
 
 	padding: 20px;
-	width: 700px;
+	width: 900px;
 	margin: 0 auto;
 	z-index: 2;
 }
@@ -126,7 +154,7 @@ html {
 	font-size: 20px;
 	margin-top: 24px;
 	padding: 5px;
-	width: 690px;
+	width: 890px;
 	} 
 #main p{ 
 	display:block;
