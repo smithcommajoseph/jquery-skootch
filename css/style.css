@@ -65,9 +65,9 @@ table {
 /*Style*/
 html {
   width: 100%;
-  background-image: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 700, color-stop(0%, #B1C939), color-stop(100%, #75B23B));
-  background-image: -moz-radial-gradient(top center, circle, #B1C939 0%, #75B23B 700px);
-  background-image: radial-gradient(top center, circle, #B1C939 0%, #75B23B 700px);
+  background-image: -webkit-gradient(radial, 50% 1%, 0, 50% 1%, 700, color-stop(0%, #7EBD2C), color-stop(100%, #659924));
+  background-image: -moz-radial-gradient(top center, circle, #7EBD2C 0%, #659924 700px);
+  background-image: radial-gradient(top center, circle, #7EBD2C 0%, #659924 700px);
   padding-top: 10px;
   font-family: Helvetica, sans-serif;
 }
@@ -97,7 +97,7 @@ html {
 	color: white;
 	text-shadow: #303810 1px 1px 3px; 
 	font: 50px 'Paytone One', arial, serif;
-	-webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0.5)));
+	-webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0.8)));
 	}
 .divider{ 
 	color:#aaa;
@@ -124,7 +124,7 @@ html {
 	font: 19px 'Paytone One', arial, serif;
 	}
 #downloads a:hover span{
-	color: #9c53c9;
+	color: #F2542D;
 }
 
 #skootch-indigen {	
@@ -149,7 +149,7 @@ html {
 	z-index: 2;
 }
 #main h2 { 
-	border-bottom: 3px solid #84962B;
+	border-bottom: 3px solid #4A0359;
 	color: #262d0b;
 	font-size: 20px;
 	margin-top: 24px;
@@ -183,7 +183,7 @@ pre.codeblock{
 	-khtml-border-radius: 7px;
 	border-radius: 7px;
 	
-	color: #9c53c9;
+	color: #8E63A7;
 	padding:20px;
 	font-size:16px;
 	}
