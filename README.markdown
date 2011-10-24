@@ -8,6 +8,10 @@ Find a bug or have a feature request? Create an issue [here](https://github.com/
 
 ##Version History
 
+####1.0beta3  
+- general refactor and cleanup
+- Added/updated examples 
+
 ####1.0beta2
 - Removing triggerEvent param
 - Adding squashOverflow param
