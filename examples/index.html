@@ -16,13 +16,6 @@
 	<!-- Whatever you do, do it with style -->
 	<link rel="stylesheet" href="http://yui.yahooapis.com/3.3.0/build/cssreset/reset-min.css">
 	<link rel="stylesheet" href="css/main.css" />
-
-	<!-- Keep it modern -->
-	<script type="text/javascript" src="js/modernizr.js"></script>
-
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-	<script type="text/javascript" src="../jquery.skootch.js"></script>
-	<script type="text/javascript" src="js/examples.js"></script>
 	
 </head>
 
@@ -30,17 +23,36 @@
 	<div id="wrapper">
 		<h1>jQuery Skootch Examples</h1>
 		
-		<h2>1. Anatomy of a basic Skootch</h2>
-		<p class="note">This will walk you through a very basic left skootch setup, displaying the HTML, CSS and JS required to get you up and running</p>
+		<h2>1. (Basic) Anatomy of a Left Skootch</h2>
+		<p class="note">This will walk you through a very basic left skootch setup, displaying the HTML, CSS and JS required to get you up and running.</p>
 		<p><a href="basic_left_skootch.html">Basic Left Skootch</a></p>
 		
-		<h2>2. Anatomy of a basic Right Skootch</h2>
-		<p class="note">This will walk you through a very basic right skootch setup, displaying the HTML, CSS and JS required to get you up and running</p>
+		<h2>2. (Basic) Anatomy of a Right Skootch</h2>
+		<p class="note">Same as the above but a basic right skootch setup, displaying the HTML, CSS and JS required to get you up and running.</p>
 		<p><a href="basic_right_skootch.html">Basic Right Skootch</a></p>
 		
-		<!-- <h2>3. Smart vs Dumb skootches</h2>
-		<p><a href="">Form Skootch</a></p> -->
+		<h2>3. (Basic) Smart vs Dumb skootches</h2>
+		<p class="note">Smart skootches (true by default) will attempt to determine how much your indigen container will need to be moved by in order to make room for the invader container. In other words, you will get different animations based on your viewport's width.</p>
+		<p class="note">A Dumb skootch will animate the same amount regardless of viewport size.</p>
+		<p class="note"><em>Note</em>: You should resize these pages pre and post 'skootching' to see the difference between smart and dumb skootches.</p>
+		<p><a href="smart_skootch.html">Smart skootch</a> &nbsp;&nbsp;&nbsp;&nbsp; <a href="dumb_skootch.html">Dumb skootch</a></p>
+		
+		<h2>4. (Beyond Basic) Better Skootching</h2>
+		<p class="note">The better way to handle offscreen content and positioning? Use offset parents.</p>
+		<p><a href="real_left_skootch.html">Real world Left Skootch</a></p>
 
+		<h2>5. (Beyond Basic) Links as invaders</h2>
+		<p class="note">A good fit for skootch is using your invader container to act as a nav item or menu.</p>
+		<p><a href="invader_links_skootch.html">Invader Links</a></p>
+		
+		<h2>6. (Beyond Basic) Forms as invaders</h2>
+		<p class="note">A feedback form or poll can also easily be placed inside invaders.</p>
+		<p><a href="invader_form_skootch.html">Invader Forms</a></p>
 	</div>
+	
+	<!-- Sauce -->
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../jquery.skootch.js"></script>
+	
 </body>
 </html>
