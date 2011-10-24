@@ -29,7 +29,7 @@
 					});
 					
 				$trigger.data(OPTS, params);
-								
+				
 				return $('#'+$trigger.attr('id')+', '+params.invaderLinks).bind('click'+E_SPACE, clickHandler = function(e){
 					var isinvader = false,
 						nonVaders = function(){
@@ -162,20 +162,16 @@
 		} else {
 			indigenSA = invaderWidth;
 		}
-	
+		
 		// set animap = to our desired direction map
-		switch(params.justify){
-			case 'right':
-				dir = params.justify;
-			default:
-				dir = 'left';
-		}
+		if(params.justify == 'right'){ dir = 'right'; }
+		else { 	dir = 'left'; }
 	
 		animap.indigen_advance[dir] = "+="+indigenSA;
 		animap.indigen_retreat[dir] = "-="+indigenSR;
 		animap.invader_advance[dir] = "+="+invaderWidth;
 		animap.invader_retreat[dir] = "-="+invaderWidth;
-	
+
 		return animap;
 	}
 
