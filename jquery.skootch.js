@@ -135,14 +135,13 @@
 		if(params.smart === true){
 			var winWidth = $(window).width(),
 				indigenWidth = $(params.indigen).outerWidth(params.indigenUseMargins),
-				totalElemsWidth = (invaderWidth*2) + params.minInvaderMargin + indigenWidth;
+				total = (invaderWidth*2) + params.minInvaderMargin + indigenWidth;
 		
-			if(totalElemsWidth <= winWidth) { indigenSA = 0; }
+			if(total <= winWidth) { indigenSA = 0; }
 			else {
 				if(winWidth <= indigenWidth ) { indigenSA = invaderWidth+params.minInvaderMargin; }
 				else {
-					var indigenOffset = $(params.indigen).offset();
-					indigenSA = (invaderWidth+params.minInvaderMargin) - indigenOffset.left;
+					indigenSA = (invaderWidth+params.minInvaderMargin) - $(params.indigen).offset().left;
 				}
 			}
 		} else {
@@ -164,8 +163,7 @@
 	function _destroy($trigger, params, callback){
 		if(!params) { return false; }
 	
-		$trigger.removeData(OPTS);
-		$trigger.unbind('click'+E_SPACE);
+		$trigger.removeData(OPTS).unbind('click'+E_SPACE);
 		$(params.indigen).unwrap();
 		$(params.invader+', '+params.indigen).removeAttr('style');
 	
