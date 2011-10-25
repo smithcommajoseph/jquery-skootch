@@ -29,10 +29,10 @@
 					});
 					
 				$trigger.data(OPTS, params);
+				$(params.indigen).data(STATE, 0);
 				
 				return $('#'+$trigger.attr('id')+', '+params.invaderLinks).bind('click'+E_SPACE, clickHandler = function(e){
-					var isinvader = false,
-						nonVaders = function(){
+					var nonVaders = function(){
 							//fire our custom callback if it exists
 							if(params.invaderClickCallback !== null){ params.invaderClickCallback(e); }
 							//otherwise...
@@ -46,31 +46,19 @@
 								 else if($(e.target).attr('type') === 'submit') {
 								     var $form = $(e.target).closest('form');
 								 }
-							
 							}
 						};
 					
 					//unbind
 					$trigger.unbind('click'+E_SPACE);
 				
-					//set the isinvader true if the e.target in the invaderLinks obj
-					for(var i=0; i < $(params.invaderLinks).length; i++){
-					    if(e.target === $(params.invaderLinks)[i]) { isinvader = true; }
-					}
-				
 					//call retreat and act appropriately
-					if(isinvader === true) {
+					if(_isInvader(e, params)) {
 						$trigger.bind('click'+E_SPACE, clickHandler);
 					
 						if(params.invaderClickRetreat === true){ _retreat($trigger, params, function(){ nonVaders(); });
 						} else { nonVaders(); }
 					} else {
-						//initial pass
-						if(typeof $(params.indigen).data(STATE) == 'undefined' || $(params.indigen).data(STATE) === null){                             
-							$(params.indigen)
-								.data(STATE, 0)
-							 	.data('justify', params.justify);
-						}
 						//if we are closed, advance
 						if($(params.indigen).data(STATE) == 0){
 							_advance($trigger, params, function(){
@@ -92,29 +80,17 @@
 		},
 		advance: function(a){
 			return this.each(function(){
-				var $trigger = $(this),
-					params = $trigger.data(OPTS),
-					callback = (a !== undefined && a.constructor == Function) ? a : null;
-					
-				_advance($trigger, params, callback);
+				_advance($(this), $(this).data(OPTS), _hollaBack(a));
 			});
 		},
 		retreat: function(a){
 			return this.each(function(){
-				var $trigger = $(this),
-					params = $trigger.data(OPTS),
-					callback = (a !== undefined && a.constructor == Function) ? a : null;
-					
-				_retreat($trigger, params, callback);
+				_retreat($(this), $(this).data(OPTS), _hollaBack(a));
 			});
 		},
 		destroy: function(a){
 			return this.each(function(){
-				var $trigger = $(this),
-					params = $trigger.data(OPTS)
-					callback = (a !== undefined && a.constructor == Function) ? a : null;
-					
-				_destroy($trigger, params, callback);
+				_destroy($(this), $(this).data(OPTS), _hollaBack(a));
 			});
 		}
 	};
@@ -134,7 +110,17 @@
 		
 		return $.extend({}, $.fn.skootch.defaults, overrides);
 	}
-
+	
+	function _hollaBack(a){
+		return (a !== undefined && a.constructor == Function) ? a : null;
+	}
+	
+	function _isInvader(e, params){
+		for(var i=0; i < $(params.invaderLinks).length; i++){
+		    if(e.target === $(params.invaderLinks)[i]) { return true; }
+		}
+	}
+	
 	function _setDirectionMaps($trigger, params){
 		var invaderWidth = $(params.invader).outerWidth(true),
 			indigenSR = $(params.indigen).css(params.justify),
