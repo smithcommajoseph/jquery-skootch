@@ -115,13 +115,17 @@
 		return (a !== undefined && a.constructor == Function) ? a : null;
 	}
 	
+	function _squashOverflow(params, val){
+		if(params.squashOverflow) { $('body').css({"overflow-x": val}); }
+	}
+	
 	function _isInvader(e, params){
 		for(var i=0; i < $(params.invaderLinks).length; i++){
 		    if(e.target === $(params.invaderLinks)[i]) { return true; }
 		}
 	}
 	
-	function _setDirectionMaps($trigger, params){
+	function _setDirectionMaps(params){
 		var invaderWidth = $(params.invader).outerWidth(true),
 			indigenSR = $(params.indigen).css(params.justify),
 			indigenSA, dir, animap = {};
@@ -172,38 +176,38 @@
 
 	//TODO: could optimize this by not calling _setDirectionMaps fn every advance/retreat.
 	//while this works as is, the animations use more CPU than they should.
-	function _advance($trigger, params, animatecallback){
-		if($(params.indigen).data(STATE) != 1){
-			var animap = _setDirectionMaps($(params.indigen), params);
-			$(params.indigen).data(STATE, 1);
+	function _advance($trigger, params, callback){
+		if($(params.indigen).data(STATE) !== 0){ return; }
+		$(params.indigen).data(STATE, 1);
 		
-			if(params.squashOverflow !== false) { $('body').css({"overflow-x": "hidden"}); }
-			$(params.indigen)
-				.css('position', 'relative')
-				.animate(animap.indigen_advance, params.advanceSpeed, params.advanceEasing);
-		
-			$trigger
-				.removeClass(params.triggerClosed)
-				.addClass(params.triggerOpen);
-			$(params.invader).animate(animap.invader_advance, params.advanceSpeed, params.advanceEasing, animatecallback);
-		}
+		var animap = _setDirectionMaps(params);
+	
+		_squashOverflow(params, "hidden");
+		$(params.indigen)
+			.css('position', 'relative')
+			.animate(animap.indigen_advance, params.advanceSpeed, params.advanceEasing);
+	
+		$trigger
+			.removeClass(params.triggerClosed)
+			.addClass(params.triggerOpen);
+		$(params.invader).animate(animap.invader_advance, params.advanceSpeed, params.advanceEasing, callback);
 	}
 
-	function _retreat($trigger, params, animatecallback){
-		if($(params.indigen).data(STATE) == 1){
-			var animap = _setDirectionMaps($(params.indigen), params);
-			$(params.indigen).data(STATE, 0);
+	function _retreat($trigger, params, callback){
+		if($(params.indigen).data(STATE) != 1){ return; }
+		$(params.indigen).data(STATE, 0);
 		
-			$(params.indigen).animate(animap.indigen_retreat, params.retreatSpeed, params.retreatEasing, function(){
-				if(params.squashOverflow !== false) { $('body').css({"overflow-x": "auto"}); }
-				$(params.indigen).removeAttr('style');
-			});
-		
-			$trigger
-				.removeClass(params.triggerOpen)
-				.addClass(params.triggerClosed);
-			$(params.invader).animate(animap.invader_retreat, params.retreatSpeed, params.retreatEasing, animatecallback);
-		}
+		var animap = _setDirectionMaps(params);
+	
+		$(params.indigen).animate(animap.indigen_retreat, params.retreatSpeed, params.retreatEasing, function(){
+			_squashOverflow(params, "auto");
+			$(params.indigen).removeAttr('style');
+		});
+	
+		$trigger
+			.removeClass(params.triggerOpen)
+			.addClass(params.triggerClosed);
+		$(params.invader).animate(animap.invader_retreat, params.retreatSpeed, params.retreatEasing, callback);
 	}
 
 	$.fn.skootch = function(method) {
