@@ -36,19 +36,3 @@ p {
 	color: #999;
 }
 p.note{ margin-bottom:20px;}
-.zoombox-container {
-  background-color:#666;
-}
-.zoombox-container a.zoombox-close{
-  display: block;
-  width: 20px;
-  height: 20px;
-  background: transparent url('../imgs/close_btn.png') no-repeat; 
-  float: right;
-}
-.zoombox-container a.zoombox-close:hover{
-	cursor:pointer;
-}
-.zoombox-container p{
-	color: #fff;
-}
