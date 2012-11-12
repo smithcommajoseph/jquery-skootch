@@ -156,9 +156,7 @@
 			indigenSA = invaderWidth;
 		}
 
-		// set animap = to our desired direction map
 		animap.direction = (params.justify == 'right') ? 'right': 'left';
-
 		animap.indigen_advance = indigenSA;
 		animap.indigen_retreat = indigenSR;
 		animap.invader_advance = invaderWidth;
